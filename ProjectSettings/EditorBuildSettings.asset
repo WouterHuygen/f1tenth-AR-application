@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Project Scenes/SettingsScene.unity
     guid: 1704294bf11ec0643954bc3a7f5b92a1
+  - enabled: 1
+    path: Assets/Scenes/Project Scenes/OriginOffsetSettingsScene.unity
+    guid: 5323c1232cc572746a240aebfa6c9ead
   m_configObjects: {}
