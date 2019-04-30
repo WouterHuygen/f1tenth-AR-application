@@ -10,35 +10,58 @@ public class SaveSettings : MonoBehaviour
 
     public Button saveButton;
 
-    private string xmlLocation; //The save location of the XML
+    public InputField serverAddressInputField;
+    public InputField serverPortInputField;
+    public InputField serverTopicInputField;
+
+    //The save location of the XML
+    private string xmlFilePath;
 
     // position values to work with the xml file.
-    private string posX = "0";
-    private string posY = "0";
-    private string posZ = "0";
+    private string posX = "";
+    private string posY = "";
+    private string posZ = "";
 
     // rotation values to work with the xml file.
-    private string rotW = "1"; // Default always 1 for normal rotations
-    private string rotX = "0";
-    private string rotY = "0";
-    private string rotZ = "0";
+    private string rotW = ""; // Default always 1 for normal rotations
+    private string rotX = "";
+    private string rotY = "";
+    private string rotZ = "";
+
+    // server variables to work with the xml file
+    private string serverAddress = "";
+    private string serverPort = "";
+    private string serverTopic = "";
 
     void Start()
     {
         // Set xml fiel location and create a new xml file if there isn't one
-        xmlLocation = Application.persistentDataPath + @"/AR-F1TENTH-SETTINGS.xml";
-        if (!File.Exists(xmlLocation))
+        xmlFilePath = Application.persistentDataPath + @"/AR-F1TENTH-SETTINGS.xml";
+        if (!File.Exists(xmlFilePath))
         {
-            CreateXML(xmlLocation);
+            CreateXML(xmlFilePath);
+            Debug.Log("File created at " + xmlFilePath);
+        }
+        else
+        {
+            Debug.Log("File exists at " + xmlFilePath);
         }
 
         //Calls the TaskOnClick method when you click the Button
         saveButton.onClick.AddListener(TaskOnClick);
+
+        
     }
 
     void TaskOnClick()
     {
-        WriteToXml(xmlLocation);
+        if (serverAddressInputField.text != null)
+        {
+            serverAddress = serverAddressInputField.text;
+            serverPort = serverPortInputField.text;
+            serverTopic = serverTopicInputField.text;
+        }
+        WriteToXml(xmlFilePath);
     }
 
     void CreateXML(string xmlFilePath)
@@ -73,64 +96,93 @@ public class SaveSettings : MonoBehaviour
 
         if (File.Exists(xmlFilePath))
         {
-            xmlDoc.Load(xmlFilePath);
+            try
+            {
+                xmlDoc.Load(xmlFilePath);
+                try
+                {
+                    XmlElement elmRoot = xmlDoc.DocumentElement;
 
-            XmlElement elmRoot = xmlDoc.DocumentElement;
+                    // cleanup existing elements inside Root
+                    elmRoot.RemoveAll();
 
-            elmRoot.RemoveAll(); // cleanup existing elements inside Root
+                    // create zeroMQ element
+                    XmlElement elmZeroMq = xmlDoc.CreateElement("zeroMq");
 
-            // create origin position offset element
-            XmlElement elmOriginOffset = xmlDoc.CreateElement("originOffset");
+                    // create server address element for ZeroMQ
+                    XmlElement elmServerAddress = xmlDoc.CreateElement("serverAddress");
+                    elmServerAddress.InnerText = serverAddress;
 
-            // create transform element
-            XmlElement elmTransform = xmlDoc.CreateElement("transform");
+                    // create server port element for ZeroMQ
+                    XmlElement elmServerPort = xmlDoc.CreateElement("serverPort");
+                    elmServerPort.InnerText = serverPort;
 
-            // create position element w/ values
-            XmlElement elmPosition = xmlDoc.CreateElement("position");
+                    // create server topic element for ZeroMQ
+                    XmlElement elmServerTopic = xmlDoc.CreateElement("serverTopic");
+                    elmServerTopic.InnerText = serverTopic;
 
-            XmlElement elmPosX = xmlDoc.CreateElement("x");
-            elmPosX.InnerText = posX;
+                    // create origin position offset element
+                    XmlElement elmOriginOffset = xmlDoc.CreateElement("originOffset");
 
-            XmlElement elmPosY = xmlDoc.CreateElement("y");
-            elmPosY.InnerText = posY;
+                    // create position element w/ values
+                    XmlElement elmPosition = xmlDoc.CreateElement("position");
 
-            XmlElement elmPosZ = xmlDoc.CreateElement("z");
-            elmPosZ.InnerText = posZ;
+                    XmlElement elmPosX = xmlDoc.CreateElement("x");
+                    elmPosX.InnerText = posX;
 
-            // create rotation element w/ values
-            XmlElement elmRotation = xmlDoc.CreateElement("rotation");
+                    XmlElement elmPosY = xmlDoc.CreateElement("y");
+                    elmPosY.InnerText = posY;
 
-            XmlElement elmRotW = xmlDoc.CreateElement("w");
-            elmRotW.InnerText = rotW;
+                    XmlElement elmPosZ = xmlDoc.CreateElement("z");
+                    elmPosZ.InnerText = posZ;
 
-            XmlElement elmRotX = xmlDoc.CreateElement("x");
-            elmRotX.InnerText = rotX;
+                    // create rotation element w/ values
+                    XmlElement elmRotation = xmlDoc.CreateElement("rotation");
 
-            XmlElement elmRotY = xmlDoc.CreateElement("y");
-            elmRotY.InnerText = rotY;
+                    XmlElement elmRotW = xmlDoc.CreateElement("w");
+                    elmRotW.InnerText = rotW;
 
-            XmlElement elmRotZ = xmlDoc.CreateElement("z");
-            elmRotZ.InnerText = rotZ;
+                    XmlElement elmRotX = xmlDoc.CreateElement("x");
+                    elmRotX.InnerText = rotX;
 
-            // append childs
-            elmRoot.AppendChild(elmOriginOffset);
+                    XmlElement elmRotY = xmlDoc.CreateElement("y");
+                    elmRotY.InnerText = rotY;
 
-            elmOriginOffset.AppendChild(elmTransform);
+                    XmlElement elmRotZ = xmlDoc.CreateElement("z");
+                    elmRotZ.InnerText = rotZ;
 
-            elmTransform.AppendChild(elmPosition);
-            elmTransform.AppendChild(elmRotation);
+                    // append childs
+                    elmRoot.AppendChild(elmOriginOffset);
+                    elmRoot.AppendChild(elmZeroMq);
 
-            elmPosition.AppendChild(elmPosX);
-            elmPosition.AppendChild(elmPosY);
-            elmPosition.AppendChild(elmPosZ);
+                    elmZeroMq.AppendChild(elmServerAddress);
+                    elmZeroMq.AppendChild(elmServerPort);
+                    elmZeroMq.AppendChild(elmServerTopic);
 
-            elmRotation.AppendChild(elmRotW);
-            elmRotation.AppendChild(elmRotX);
-            elmRotation.AppendChild(elmRotY);
-            elmRotation.AppendChild(elmRotZ);
+                    elmOriginOffset.AppendChild(elmPosition);
+                    elmOriginOffset.AppendChild(elmRotation);
 
+                    elmPosition.AppendChild(elmPosX);
+                    elmPosition.AppendChild(elmPosY);
+                    elmPosition.AppendChild(elmPosZ);
 
-            xmlDoc.Save(xmlFilePath); // save file
+                    elmRotation.AppendChild(elmRotW);
+                    elmRotation.AppendChild(elmRotX);
+                    elmRotation.AppendChild(elmRotY);
+                    elmRotation.AppendChild(elmRotZ);
+
+                    // save file
+                    xmlDoc.Save(xmlFilePath);
+                }
+                catch (IOException ex)
+                {
+                    Debug.Log("Error writing element to XML : " + ex.TargetSite);
+                }
+            }
+            catch (IOException ex)
+            {
+                Debug.Log("Error loading xml file : " + ex.TargetSite);
+            }
         }
     }
 }

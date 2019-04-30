@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Project Scenes/OriginOffsetSettingsScene.unity
     guid: 5323c1232cc572746a240aebfa6c9ead
+  - enabled: 1
+    path: Assets/Scenes/Project Scenes/NetworkSettingsScene.unity
+    guid: 0fc6403e5508abd4a8b6db0f7ce9d203
   m_configObjects: {}
