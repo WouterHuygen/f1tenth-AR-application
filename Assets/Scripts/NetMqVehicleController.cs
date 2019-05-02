@@ -51,8 +51,6 @@ public class NetMqVehicleController : MonoBehaviour
 
     public List<int> vehicleIds { get; private set; }
 
-    //private List<GameObject> vehicles;
-
     private GameObject[] vehicleArray = new GameObject[0];
     private int newVehicleArrayLength = 0;
 
@@ -92,18 +90,16 @@ public class NetMqVehicleController : MonoBehaviour
                 }
 
                 Array.Resize(ref vehicleArray, newVehicleArrayLength + 1);
-                
 
-                //if (pose.IsPhysical == true)
-                //{
-                //    CreateNewPhysicalVehicleMask((int)pose.Id);
-                //}
-                //else if (pose.IsPhysical == false)
-                //{
-                //    CreateNewVirtualVehicle((int)pose.Id);
-                //}
 
-            CreateNewVirtualVehicle((int)pose.Id);
+                if (pose.IsPhysical == true)
+                {
+                    CreateNewPhysicalVehicleMask((int)pose.Id);
+                }
+                else if (pose.IsPhysical == false)
+                {
+                    CreateNewVirtualVehicle((int)pose.Id);
+                }
 
             }
             
@@ -116,8 +112,6 @@ public class NetMqVehicleController : MonoBehaviour
         _netMqListener = new NetMqListener(HandleMessage, address, topic);
         _netMqListener.Start();
         vehicleIds = new List<int>();
-        //vehicles = new List<GameObject>();
-
     }
 
     void Update()
@@ -150,7 +144,6 @@ public class NetMqVehicleController : MonoBehaviour
     {
         GameObject _vehicle = (GameObject)Instantiate(vehicle);
         vehicleArray[Id] = _vehicle;
-        //vehicles.Add(_vehicle);
 
     }
 
@@ -158,6 +151,5 @@ public class NetMqVehicleController : MonoBehaviour
     {
         GameObject _mask = (GameObject)Instantiate(occlusionMask);
         vehicleArray[Id] = _mask;
-        //vehicles.Add(_mask);
     }
 }
