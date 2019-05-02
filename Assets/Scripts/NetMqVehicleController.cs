@@ -15,11 +15,14 @@ using Assets.Scripts;
 
 public class NetMqVehicleController : MonoBehaviour
 {
-    [Header("NetMQ configuration")]
-    [Tooltip("ZeroMQ adress where the client should connect to")]
-    public string address = "";
-    [Tooltip("ZeroMQ topic where the client should subscribe to")]
-    public string topic = "pose";
+
+    // // These variables are for setting the NetMQ settings manually through the unity editor. 
+    // // VSMS server address: tcp://143.129.39.59:5555
+    //[Header("NetMQ configuration")]
+    //[Tooltip("ZeroMQ adress where the client should connect to")]
+    //public string address;
+    //[Tooltip("ZeroMQ topic where the client should subscribe to")]
+    //public string topic = "pose";
 
     [Header("Vehicle configuration")]
     [Tooltip("GameObject representing the autonomous car")]
@@ -28,10 +31,8 @@ public class NetMqVehicleController : MonoBehaviour
     public GameObject occlusionMask;
     [Tooltip("The value the received coördinates are normalized with")]
     public float normalizeVectorFromServer = 1F;
-    [Tooltip("The offset for the 0 coordinate")]
-    public UnityEngine.Vector3 nullPointOffset = new UnityEngine.Vector3(2.815F, 0F, -0.22F);
-    [Tooltip("Text Object to display")]
-    public Text poseText;
+    [Tooltip("The offset for the origin coordinate")]
+    public UnityEngine.Vector3 originOffset;
 
     [Header("AR configuration")]
     [Tooltip("First image target to be tracked")]
@@ -43,84 +44,35 @@ public class NetMqVehicleController : MonoBehaviour
     [Tooltip("Fourth image target to be tracked")]
     public ImageTargetBehaviour targetFour;
 
-    private UnityEngine.Vector3 newVehiclePos;
+    // NetMQ listener
     private NetMqListener _netMqListener;
+    // Proto Object
     private F1Tenth.Pose pose;
-    private UnityEngine.Vector3 startPos;
-    private GameObject cube;
+
+    // NetMQ config variables
+    private string serverAddress;
+    private string serverIp;
+    private string serverPort;
+    private string serverTopic;
 
     public List<int> vehicleIds { get; private set; }
-
-    //private List<GameObject> vehicles;
 
     private GameObject[] vehicleArray = new GameObject[0];
     private int newVehicleArrayLength = 0;
 
     public bool IsSetup { get; private set; }
 
-    private void MoveObjectTo(GameObject obj, UnityEngine.Vector3 newPosition)
+
+    private void Start()
     {
-        UnityEngine.Vector3 nVector = newPosition;
-        obj.transform.position = nVector;
-    }
+        GetNetMqSettings();
 
-    private void RotateObjectTo(GameObject obj, UnityEngine.Quaternion newRotation)
-    {
-        UnityEngine.Quaternion _newRotation = newRotation;
-        obj.transform.localRotation = _newRotation;
-    }
-
-    private void HandleMessage(byte[] message)
-    {
-        var text = SendReceiveConstants.DefaultEncoding.GetString(message);
-        
-        if (text == topic)
-        {
-            Debug.Log(text);
-        }
-        else if (text != topic)
-        {
-            pose = F1Tenth.Pose.Parser.ParseFrom(message);
-            Debug.Log(pose);
-            if (!vehicleIds.Contains((int)pose.Id))
-            {
-                vehicleIds.Add((int)pose.Id);
-
-                foreach (int id in vehicleIds)
-                {
-                    newVehicleArrayLength = Math.Max(newVehicleArrayLength, id);
-                }
-
-                Array.Resize(ref vehicleArray, newVehicleArrayLength + 1);
-                
-
-                //if (pose.IsPhysical == true)
-                //{
-                //    CreateNewPhysicalVehicleMask((int)pose.Id);
-                //}
-                //else if (pose.IsPhysical == false)
-                //{
-                //    CreateNewVirtualVehicle((int)pose.Id);
-                //}
-
-            CreateNewVirtualVehicle((int)pose.Id);
-
-            }
-            
-        }
-
-    }
-
-    void Start()
-    {
-        _netMqListener = new NetMqListener(HandleMessage, address, topic);
+        _netMqListener = new NetMqListener(HandleMessage, serverAddress, serverTopic);
         _netMqListener.Start();
         vehicleIds = new List<int>();
-        //vehicles = new List<GameObject>();
-
     }
 
-    void Update()
+    private void Update()
     {
         _netMqListener.Update();
 
@@ -145,12 +97,61 @@ public class NetMqVehicleController : MonoBehaviour
         _netMqListener.Stop();
     }
 
+    private void HandleMessage(byte[] message)
+    {
+        var text = SendReceiveConstants.DefaultEncoding.GetString(message);
+
+        if (text == serverTopic)
+        {
+            Debug.Log(text);
+        }
+        else if (text != serverTopic)
+        {
+            pose = F1Tenth.Pose.Parser.ParseFrom(message);
+            Debug.Log(pose);
+            if (!vehicleIds.Contains((int)pose.Id))
+            {
+                vehicleIds.Add((int)pose.Id);
+
+                foreach (int id in vehicleIds)
+                {
+                    newVehicleArrayLength = Math.Max(newVehicleArrayLength, id);
+                }
+
+                Array.Resize(ref vehicleArray, newVehicleArrayLength + 1);
+
+
+                if (pose.IsPhysical == true)
+                {
+                    CreateNewPhysicalVehicleMask((int)pose.Id);
+                }
+                else if (pose.IsPhysical == false)
+                {
+                    CreateNewVirtualVehicle((int)pose.Id);
+                }
+
+            }
+
+        }
+
+    }
+
+    private void MoveObjectTo(GameObject obj, UnityEngine.Vector3 newPosition)
+    {
+        UnityEngine.Vector3 nVector = newPosition;
+        obj.transform.position = nVector;
+    }
+
+    private void RotateObjectTo(GameObject obj, UnityEngine.Quaternion newRotation)
+    {
+        UnityEngine.Quaternion _newRotation = newRotation;
+        obj.transform.localRotation = _newRotation;
+    }
 
     private void CreateNewVirtualVehicle(int Id)
     {
         GameObject _vehicle = (GameObject)Instantiate(vehicle);
         vehicleArray[Id] = _vehicle;
-        //vehicles.Add(_vehicle);
 
     }
 
@@ -158,6 +159,14 @@ public class NetMqVehicleController : MonoBehaviour
     {
         GameObject _mask = (GameObject)Instantiate(occlusionMask);
         vehicleArray[Id] = _mask;
-        //vehicles.Add(_mask);
     }
+
+    private void GetNetMqSettings()
+    {
+        serverIp = SettingsManager.Instance.serverIp;
+        serverPort = SettingsManager.Instance.serverPort;
+        serverTopic = SettingsManager.Instance.serverTopic;
+        serverAddress = "tcp://" + serverIp + ":" + serverPort;
+    }
+
 }

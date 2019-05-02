@@ -11,12 +11,11 @@ namespace Assets.Scripts
         // !!!Waardes zijn aangepast om coördinaten stelsels te laten matchen!!!
         public static UnityEngine.Vector3 ToUnityVector3(F1Tenth.Vector3 vector3)
         {
-            UnityEngine.Vector3 nullPointOffset = new UnityEngine.Vector3(2.815F, 0.22F, 0F);
             UnityEngine.Vector3 _vector3 = new UnityEngine.Vector3();
 
-            _vector3.x = vector3.Y - nullPointOffset.y;
+            _vector3.x = -vector3.Y;
             _vector3.y = vector3.Z;
-            _vector3.z = vector3.X - nullPointOffset.x;
+            _vector3.z = vector3.X;
             
             return _vector3;
         }
@@ -24,9 +23,9 @@ namespace Assets.Scripts
         public static UnityEngine.Quaternion ToUnityQuaternion(F1Tenth.Quaternion quaternion)
         {
             UnityEngine.Quaternion _quaternion = new UnityEngine.Quaternion();
-            _quaternion.w = 1f;
+            _quaternion.w = quaternion.W;
             _quaternion.x = quaternion.Y;
-            _quaternion.y = quaternion.Z;
+            _quaternion.y = -quaternion.Z;
             _quaternion.z = quaternion.X;
             return _quaternion;
         }

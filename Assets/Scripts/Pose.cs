@@ -24,16 +24,16 @@ namespace F1Tenth {
     static PoseReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgpQb3NlLnByb3RvEgdmMXRlbnRoIl0KBFBvc2USCgoCaWQYASABKAMSIgoI",
+            "CgpQb3NlLnByb3RvEgdmMXRlbnRoInEKBFBvc2USCgoCaWQYASABKAMSIgoI",
             "cG9zaXRpb24YAiABKAsyEC5mMXRlbnRoLlZlY3RvcjMSJQoIcm90YXRpb24Y",
-            "AyABKAsyEy5mMXRlbnRoLlF1YXRlcm5pb24iKgoHVmVjdG9yMxIJCgF4GAEg",
-            "ASgCEgkKAXkYAiABKAISCQoBehgDIAEoAiI4CgpRdWF0ZXJuaW9uEgkKAXcY",
-            "ASABKAISCQoBeBgCIAEoAhIJCgF5GAMgASgCEgkKAXoYBCABKAJiBnByb3Rv",
-            "Mw=="));
+            "AyABKAsyEy5mMXRlbnRoLlF1YXRlcm5pb24SEgoKaXNQaHlzaWNhbBgEIAEo",
+            "CCIqCgdWZWN0b3IzEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgC",
+            "IjgKClF1YXRlcm5pb24SCQoBdxgBIAEoAhIJCgF4GAIgASgCEgkKAXkYAyAB",
+            "KAISCQoBehgEIAEoAmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1Tenth.Pose), global::F1Tenth.Pose.Parser, new[]{ "Id", "Position", "Rotation" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::F1Tenth.Pose), global::F1Tenth.Pose.Parser, new[]{ "Id", "Position", "Rotation", "IsPhysical" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::F1Tenth.Vector3), global::F1Tenth.Vector3.Parser, new[]{ "X", "Y", "Z" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::F1Tenth.Quaternion), global::F1Tenth.Quaternion.Parser, new[]{ "W", "X", "Y", "Z" }, null, null, null)
           }));
@@ -70,6 +70,7 @@ namespace F1Tenth {
       id_ = other.id_;
       position_ = other.position_ != null ? other.position_.Clone() : null;
       rotation_ = other.rotation_ != null ? other.rotation_.Clone() : null;
+      isPhysical_ = other.isPhysical_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -111,6 +112,17 @@ namespace F1Tenth {
       }
     }
 
+    /// <summary>Field number for the "isPhysical" field.</summary>
+    public const int IsPhysicalFieldNumber = 4;
+    private bool isPhysical_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool IsPhysical {
+      get { return isPhysical_; }
+      set {
+        isPhysical_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Pose);
@@ -127,6 +139,7 @@ namespace F1Tenth {
       if (Id != other.Id) return false;
       if (!object.Equals(Position, other.Position)) return false;
       if (!object.Equals(Rotation, other.Rotation)) return false;
+      if (IsPhysical != other.IsPhysical) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -136,6 +149,7 @@ namespace F1Tenth {
       if (Id != 0L) hash ^= Id.GetHashCode();
       if (position_ != null) hash ^= Position.GetHashCode();
       if (rotation_ != null) hash ^= Rotation.GetHashCode();
+      if (IsPhysical != false) hash ^= IsPhysical.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -161,6 +175,10 @@ namespace F1Tenth {
         output.WriteRawTag(26);
         output.WriteMessage(Rotation);
       }
+      if (IsPhysical != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(IsPhysical);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -177,6 +195,9 @@ namespace F1Tenth {
       }
       if (rotation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Rotation);
+      }
+      if (IsPhysical != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -203,6 +224,9 @@ namespace F1Tenth {
           Rotation = new global::F1Tenth.Quaternion();
         }
         Rotation.MergeFrom(other.Rotation);
+      }
+      if (other.IsPhysical != false) {
+        IsPhysical = other.IsPhysical;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -231,6 +255,10 @@ namespace F1Tenth {
               Rotation = new global::F1Tenth.Quaternion();
             }
             input.ReadMessage(Rotation);
+            break;
+          }
+          case 32: {
+            IsPhysical = input.ReadBool();
             break;
           }
         }

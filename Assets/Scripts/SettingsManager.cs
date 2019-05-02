@@ -1,75 +1,70 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class SaveSettings : MonoBehaviour
+public class SettingsManager : Singleton<SettingsManager>
 {
-
-    public Button saveButton;
-
-    public InputField serverAddressInputField;
-    public InputField serverPortInputField;
-    public InputField serverTopicInputField;
+    // Prevent non-singleton constructor use.
+    protected SettingsManager() { }
 
     //The save location of the XML
     private string xmlFilePath;
 
     // position values to work with the xml file.
-    private string posX = "";
-    private string posY = "";
-    private string posZ = "";
+
+    public string posX { get; set; }
+    public string posY { get; set; }
+    public string posZ { get; set; }
 
     // rotation values to work with the xml file.
-    private string rotW = ""; // Default always 1 for normal rotations
-    private string rotX = "";
-    private string rotY = "";
-    private string rotZ = "";
+    public string rotW { get; set; }
+    public string rotX { get; set; }
+    public string rotY { get; set; }
+    public string rotZ { get; set; }
 
     // server variables to work with the xml file
-    private string serverAddress = "";
-    private string serverPort = "";
-    private string serverTopic = "";
+    public string serverIp { get; set; }
+    public string serverPort { get; set; }
+    public string serverTopic { get; set; }
 
-    void Start()
+    private void Start()
+    {  
+        InitXmlFile();
+    }
+
+
+
+    void Awake()
     {
-        // Set xml fiel location and create a new xml file if there isn't one
+        DontDestroyOnLoad(transform.gameObject);
+    }
+
+    private void InitXmlFile()
+    {
+        // Set xml file location and create a new xml file if there isn't one
         xmlFilePath = Application.persistentDataPath + @"/AR-F1TENTH-SETTINGS.xml";
+
         if (!File.Exists(xmlFilePath))
         {
-            CreateXML(xmlFilePath);
-            Debug.Log("File created at " + xmlFilePath);
+            CreateXml();
+            Debug.Log("XML settings file created at " + xmlFilePath);
         }
         else
         {
-            Debug.Log("File exists at " + xmlFilePath);
+            LoadZeroMqSettingsFromXml();
+            LoadOriginOffsetSettingsFromXml();
+            Debug.Log("XML settings loaded from " + xmlFilePath);
         }
-
-        //Calls the TaskOnClick method when you click the Button
-        saveButton.onClick.AddListener(TaskOnClick);
-
-        
     }
 
-    void TaskOnClick()
-    {
-        if (serverAddressInputField.text != null)
-        {
-            serverAddress = serverAddressInputField.text;
-            serverPort = serverPortInputField.text;
-            serverTopic = serverTopicInputField.text;
-        }
-        WriteToXml(xmlFilePath);
-    }
-
-    void CreateXML(string xmlFilePath)
+    private void CreateXml()
     {
         try
         {
             File.Create(xmlFilePath).Dispose(); // Break the stream with file immediately after file creation
-            Debug.Log("File created at: " + xmlFilePath);
             try
             {
                 using (StreamWriter sW = new StreamWriter(xmlFilePath))
@@ -90,7 +85,102 @@ public class SaveSettings : MonoBehaviour
         }
     }
 
-    void WriteToXml(string xmlFilePath)
+    private void LoadZeroMqSettingsFromXml()
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+
+        xmlDoc.Load(xmlFilePath);
+
+        XmlNodeList zeroMqSettingsList = xmlDoc.GetElementsByTagName("zeroMq");
+
+        foreach (XmlNode zeroMqSetting in zeroMqSettingsList)
+        {
+            XmlNodeList settingContent = zeroMqSetting.ChildNodes;
+
+            foreach (XmlNode settingItem in settingContent)
+            {
+
+                if (settingItem.Name == "serverAddress")
+                {
+                    serverIp = settingItem.InnerText;
+                }
+                else if (settingItem.Name == "serverPort")
+                {
+                    serverPort = settingItem.InnerText;
+                }
+                else if (settingItem.Name == "serverTopic")
+                {
+                    serverTopic = settingItem.InnerText;
+                }
+            }
+        }
+    }
+
+    private void LoadOriginOffsetSettingsFromXml()
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+
+        xmlDoc.Load(xmlFilePath);
+
+        XmlNodeList originOffsetSettingsList = xmlDoc.GetElementsByTagName("originOffset");
+
+        foreach (XmlNode OriginOffsetSetting in originOffsetSettingsList)
+        {
+            XmlNodeList settingContent = OriginOffsetSetting.ChildNodes;
+
+            foreach (XmlNode settingItem in settingContent)
+            {
+
+                if (settingItem.Name == "position")
+                {
+                    XmlNodeList positionContent = settingItem.ChildNodes;
+
+                    foreach (XmlNode positionItem in positionContent)
+                    {
+                        if (positionItem.Name == "x")
+                        {
+                            posX = positionItem.InnerText;
+                        }
+                        else if (positionItem.Name == "y")
+                        {
+                            posY = positionItem.InnerText;
+                        }
+                        else if (positionItem.Name == "z")
+                        {
+                            posZ = positionItem.InnerText;
+                        }
+                    }
+                }
+                else if (settingItem.Name == "rotation")
+                {
+                    XmlNodeList rotationContent = settingItem.ChildNodes;
+
+                    foreach (XmlNode rotationItem in rotationContent)
+                    {
+                        if (rotationItem.Name == "x")
+                        {
+                            rotX = rotationItem.InnerText;
+                        }
+                        else if (rotationItem.Name == "y")
+                        {
+                            rotY = rotationItem.InnerText;
+                        }
+                        else if (rotationItem.Name == "z")
+                        {
+                            rotZ = rotationItem.InnerText;
+                        }
+                        else if (rotationItem.Name == "w")
+                        {
+                            rotW = rotationItem.InnerText;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void SaveXml()
     {
         XmlDocument xmlDoc = new XmlDocument();
 
@@ -111,7 +201,7 @@ public class SaveSettings : MonoBehaviour
 
                     // create server address element for ZeroMQ
                     XmlElement elmServerAddress = xmlDoc.CreateElement("serverAddress");
-                    elmServerAddress.InnerText = serverAddress;
+                    elmServerAddress.InnerText = serverIp;
 
                     // create server port element for ZeroMQ
                     XmlElement elmServerPort = xmlDoc.CreateElement("serverPort");
@@ -185,4 +275,7 @@ public class SaveSettings : MonoBehaviour
             }
         }
     }
+
+
+
 }
