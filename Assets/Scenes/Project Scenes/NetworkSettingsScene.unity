@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 348060760}
   - component: {fileID: 348060759}
   m_Layer: 5
-  m_Name: ServerAddressInputField
+  m_Name: ServerIpInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -523,9 +523,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f2445b05901064c96c739524a59005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverAddressText: {fileID: 473892063}
-  serverPortText: {fileID: 1924613372}
-  serverTopicText: {fileID: 1293482611}
+  serverAdressInputField: {fileID: 348060759}
+  serverPortInputField: {fileID: 1972716333}
+  serverTopicInputField: {fileID: 1979172245}
+  saveButton: {fileID: 2119224011}
 --- !u!1 &430178639
 GameObject:
   m_ObjectHideFlags: 0
@@ -637,7 +638,7 @@ GameObject:
   - component: {fileID: 473892064}
   - component: {fileID: 473892063}
   m_Layer: 5
-  m_Name: ServerAddressInputPlaceholder
+  m_Name: ServerIpInputPlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -695,7 +696,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Enter a server address...
+  m_Text: Enter a server IP...
 --- !u!222 &473892064
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -977,7 +978,7 @@ GameObject:
   - component: {fileID: 648222700}
   - component: {fileID: 648222701}
   m_Layer: 5
-  m_Name: ServerAddress
+  m_Name: ServerIp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1697,7 +1698,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: ZeroMQ server address
+  m_Text: ZeroMQ server IP
 --- !u!222 &1725878107
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2158,7 +2159,6 @@ GameObject:
   - component: {fileID: 2119224013}
   - component: {fileID: 2119224012}
   - component: {fileID: 2119224011}
-  - component: {fileID: 2119224010}
   - component: {fileID: 2119224009}
   m_Layer: 5
   m_Name: SaveSettingsButton
@@ -2201,22 +2201,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonToClick: {fileID: 2119224011}
   sceneToLoad: SettingsScene
---- !u!114 &2119224010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2119224007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05b414248e214c54da992b3e5dc9c179, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  saveButton: {fileID: 2119224011}
-  serverAddressInputField: {fileID: 348060759}
-  serverPortInputField: {fileID: 1972716333}
-  serverTopicInputField: {fileID: 1979172245}
 --- !u!114 &2119224011
 MonoBehaviour:
   m_ObjectHideFlags: 0
