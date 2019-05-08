@@ -29,11 +29,7 @@ public class NetMqVehicleController : MonoBehaviour
     public GameObject vehicle;
     [Tooltip("GameObject representing the occlusion mask for a physical autonomous car")]
     public GameObject occlusionMask;
-    [Tooltip("The value the received coördinates are normalized with")]
-    public float normalizeVectorFromServer = 1F;
-    [Tooltip("The offset for the origin coordinate")]
-    public UnityEngine.Vector3 originOffset;
-
+    
     [Header("AR configuration")]
     [Tooltip("First image target to be tracked")]
     public ImageTargetBehaviour targetOne;
@@ -60,12 +56,17 @@ public class NetMqVehicleController : MonoBehaviour
     private GameObject[] vehicleArray = new GameObject[0];
     private int newVehicleArrayLength = 0;
 
+    // Origin Offset to set the starting point for the cars
+    private UnityEngine.Vector3 originOffsetPosition;
+    private UnityEngine.Quaternion originOffsetRotation;
+
     public bool IsSetup { get; private set; }
 
 
     private void Start()
     {
         GetNetMqSettings();
+        SetupOriginOffset();
 
         _netMqListener = new NetMqListener(HandleMessage, serverAddress, serverTopic);
         _netMqListener.Start();
@@ -79,16 +80,12 @@ public class NetMqVehicleController : MonoBehaviour
         if (targetOne.CurrentStatus == TrackableBehaviour.Status.TRACKED && targetTwo.CurrentStatus == TrackableBehaviour.Status.TRACKED && IsSetup == false)
         {
             IsSetup = true;
-
-            
         }
         else if (IsSetup == true)
         {
+            MoveObjectTo(vehicleArray[(int)pose.Id], (Converter.ToUnityVector3(pose.Position)) + originOffsetPosition);
 
-            MoveObjectTo(vehicleArray[(int)pose.Id], (Converter.ToUnityVector3(pose.Position) / normalizeVectorFromServer));
-
-            RotateObjectTo(vehicleArray[(int)pose.Id], (Converter.ToUnityQuaternion(pose.Rotation)));
-            
+            RotateObjectTo(vehicleArray[(int)pose.Id], (Converter.ToUnityQuaternion(pose.Rotation)) * originOffsetRotation);
         }
     }
 
@@ -120,15 +117,22 @@ public class NetMqVehicleController : MonoBehaviour
 
                 Array.Resize(ref vehicleArray, newVehicleArrayLength + 1);
 
-
-                if (pose.IsPhysical == true)
+                if (SettingsManager.Instance.IsOccluded == true)
                 {
-                    CreateNewPhysicalVehicleMask((int)pose.Id);
+                    if (pose.IsPhysical == true)
+                    {
+                        CreateNewPhysicalVehicleMask((int)pose.Id);
+                    }
+                    else if (pose.IsPhysical == false)
+                    {
+                        CreateNewVirtualVehicle((int)pose.Id);
+                    }
                 }
-                else if (pose.IsPhysical == false)
+                else if (SettingsManager.Instance.IsOccluded == true && pose.IsPhysical == false)
                 {
                     CreateNewVirtualVehicle((int)pose.Id);
                 }
+                
 
             }
 
@@ -167,6 +171,20 @@ public class NetMqVehicleController : MonoBehaviour
         serverPort = SettingsManager.Instance.serverPort;
         serverTopic = SettingsManager.Instance.serverTopic;
         serverAddress = "tcp://" + serverIp + ":" + serverPort;
+    }
+
+    private void SetupOriginOffset()
+    {
+        originOffsetPosition = new UnityEngine.Vector3(
+            SettingsManager.Instance.posX,
+            SettingsManager.Instance.posY,
+            SettingsManager.Instance.posZ);
+
+        originOffsetRotation = new UnityEngine.Quaternion(
+            SettingsManager.Instance.rotW,
+            SettingsManager.Instance.rotX,
+            SettingsManager.Instance.rotY,
+            SettingsManager.Instance.rotZ);
     }
 
 }
