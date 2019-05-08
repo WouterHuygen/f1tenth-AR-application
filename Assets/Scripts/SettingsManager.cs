@@ -15,20 +15,23 @@ public class SettingsManager : Singleton<SettingsManager>
 
     // position values to work with the xml file.
 
-    public string posX { get; set; }
-    public string posY { get; set; }
-    public string posZ { get; set; }
+    public float posX { get; set; }
+    public float posY { get; set; }
+    public float posZ { get; set; }
 
     // rotation values to work with the xml file.
-    public string rotW { get; set; }
-    public string rotX { get; set; }
-    public string rotY { get; set; }
-    public string rotZ { get; set; }
+    public float rotW { get; set; }
+    public float rotX { get; set; }
+    public float rotY { get; set; }
+    public float rotZ { get; set; }
 
     // server variables to work with the xml file
     public string serverIp { get; set; }
     public string serverPort { get; set; }
     public string serverTopic { get; set; }
+
+    // Other settings variables to work with the xml file
+    public bool IsOccluded { get; set; }
 
     private void Start()
     {  
@@ -56,6 +59,7 @@ public class SettingsManager : Singleton<SettingsManager>
         {
             LoadZeroMqSettingsFromXml();
             LoadOriginOffsetSettingsFromXml();
+            LoadOtherSettingsFromXml();
             Debug.Log("XML settings loaded from " + xmlFilePath);
         }
     }
@@ -114,6 +118,7 @@ public class SettingsManager : Singleton<SettingsManager>
                 }
             }
         }
+        
     }
 
     private void LoadOriginOffsetSettingsFromXml()
@@ -139,15 +144,15 @@ public class SettingsManager : Singleton<SettingsManager>
                     {
                         if (positionItem.Name == "x")
                         {
-                            posX = positionItem.InnerText;
+                            posX = float.Parse(positionItem.InnerText);
                         }
                         else if (positionItem.Name == "y")
                         {
-                            posY = positionItem.InnerText;
+                            posY = float.Parse(positionItem.InnerText);
                         }
                         else if (positionItem.Name == "z")
                         {
-                            posZ = positionItem.InnerText;
+                            posZ = float.Parse(positionItem.InnerText);
                         }
                     }
                 }
@@ -159,25 +164,48 @@ public class SettingsManager : Singleton<SettingsManager>
                     {
                         if (rotationItem.Name == "x")
                         {
-                            rotX = rotationItem.InnerText;
+                            rotX = float.Parse(rotationItem.InnerText);
                         }
                         else if (rotationItem.Name == "y")
                         {
-                            rotY = rotationItem.InnerText;
+                            rotY = float.Parse(rotationItem.InnerText);
                         }
                         else if (rotationItem.Name == "z")
                         {
-                            rotZ = rotationItem.InnerText;
+                            rotZ = float.Parse(rotationItem.InnerText);
                         }
                         else if (rotationItem.Name == "w")
                         {
-                            rotW = rotationItem.InnerText;
+                            rotW = float.Parse(rotationItem.InnerText);
                         }
                     }
                 }
             }
         }
+    }
 
+    private void LoadOtherSettingsFromXml()
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+
+        xmlDoc.Load(xmlFilePath);
+
+        XmlNodeList otherSettingsList = xmlDoc.GetElementsByTagName("otherSettings");
+
+        foreach (XmlNode otherSetting in otherSettingsList)
+        {
+            XmlNodeList settingContent = otherSetting.ChildNodes;
+
+            foreach (XmlNode settingItem in settingContent)
+            {
+
+                if (settingItem.Name == "IsOccluded")
+                {
+                    string isOccluded = IsOccluded.ToString();
+                    isOccluded = settingItem.InnerText;
+                }
+            }
+        }
     }
 
     public void SaveXml()
@@ -196,6 +224,7 @@ public class SettingsManager : Singleton<SettingsManager>
                     // cleanup existing elements inside Root
                     elmRoot.RemoveAll();
 
+
                     // create zeroMQ element
                     XmlElement elmZeroMq = xmlDoc.CreateElement("zeroMq");
 
@@ -211,6 +240,7 @@ public class SettingsManager : Singleton<SettingsManager>
                     XmlElement elmServerTopic = xmlDoc.CreateElement("serverTopic");
                     elmServerTopic.InnerText = serverTopic;
 
+
                     // create origin position offset element
                     XmlElement elmOriginOffset = xmlDoc.CreateElement("originOffset");
 
@@ -218,32 +248,40 @@ public class SettingsManager : Singleton<SettingsManager>
                     XmlElement elmPosition = xmlDoc.CreateElement("position");
 
                     XmlElement elmPosX = xmlDoc.CreateElement("x");
-                    elmPosX.InnerText = posX;
+                    elmPosX.InnerText = posX.ToString();
 
                     XmlElement elmPosY = xmlDoc.CreateElement("y");
-                    elmPosY.InnerText = posY;
+                    elmPosY.InnerText = posY.ToString();
 
                     XmlElement elmPosZ = xmlDoc.CreateElement("z");
-                    elmPosZ.InnerText = posZ;
+                    elmPosZ.InnerText = posZ.ToString();
 
                     // create rotation element w/ values
                     XmlElement elmRotation = xmlDoc.CreateElement("rotation");
 
                     XmlElement elmRotW = xmlDoc.CreateElement("w");
-                    elmRotW.InnerText = rotW;
+                    elmRotW.InnerText = rotW.ToString();
 
                     XmlElement elmRotX = xmlDoc.CreateElement("x");
-                    elmRotX.InnerText = rotX;
+                    elmRotX.InnerText = rotX.ToString();
 
                     XmlElement elmRotY = xmlDoc.CreateElement("y");
-                    elmRotY.InnerText = rotY;
+                    elmRotY.InnerText = rotY.ToString();
 
                     XmlElement elmRotZ = xmlDoc.CreateElement("z");
-                    elmRotZ.InnerText = rotZ;
+                    elmRotZ.InnerText = rotZ.ToString();
+
+
+                    // create other settings element
+                    XmlElement elmOtherSettings = xmlDoc.CreateElement("otherSettings");
+
+                    XmlElement elmOcclusion = xmlDoc.CreateElement("IsOccluded");
+                    elmOcclusion.InnerText = IsOccluded.ToString();
 
                     // append childs
                     elmRoot.AppendChild(elmOriginOffset);
                     elmRoot.AppendChild(elmZeroMq);
+                    elmRoot.AppendChild(elmOtherSettings);
 
                     elmZeroMq.AppendChild(elmServerAddress);
                     elmZeroMq.AppendChild(elmServerPort);
@@ -251,6 +289,8 @@ public class SettingsManager : Singleton<SettingsManager>
 
                     elmOriginOffset.AppendChild(elmPosition);
                     elmOriginOffset.AppendChild(elmRotation);
+
+                    elmOtherSettings.AppendChild(elmOcclusion);
 
                     elmPosition.AppendChild(elmPosX);
                     elmPosition.AppendChild(elmPosY);

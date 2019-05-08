@@ -5,7 +5,7 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LoadZeroMqSettings : MonoBehaviour
+public class HandleZeroMqSettings : MonoBehaviour
 {
     public InputField serverAdressInputField;
     public InputField serverPortInputField;
@@ -23,11 +23,7 @@ public class LoadZeroMqSettings : MonoBehaviour
 
     void TaskOnClick()
     {
-        SettingsManager.Instance.serverIp = serverAdressInputField.text;
-        SettingsManager.Instance.serverPort = serverPortInputField.text;
-        SettingsManager.Instance.serverTopic = serverTopicInputField.text;
-
-        SettingsManager.Instance.SaveXml();
+        SaveZeroMqSettings();
     }
 
     private void GetZeroMqSettings()
@@ -35,5 +31,14 @@ public class LoadZeroMqSettings : MonoBehaviour
         serverAdressInputField.text = SettingsManager.Instance.serverIp;
         serverPortInputField.text = SettingsManager.Instance.serverPort;
         serverTopicInputField.text = SettingsManager.Instance.serverTopic;
+    }
+
+    private void SaveZeroMqSettings()
+    {
+        SettingsManager.Instance.serverIp = serverAdressInputField.text;
+        SettingsManager.Instance.serverPort = serverPortInputField.text;
+        SettingsManager.Instance.serverTopic = serverTopicInputField.text;
+
+        SettingsManager.Instance.SaveXml();
     }
 }
