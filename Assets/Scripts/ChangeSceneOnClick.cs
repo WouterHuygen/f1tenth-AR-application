@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ChangeSceneOnClick : MonoBehaviour
 {
     public Button buttonToClick;
+
     public string sceneToLoad;
 
     void Start()

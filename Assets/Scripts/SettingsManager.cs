@@ -13,32 +13,37 @@ public class SettingsManager : Singleton<SettingsManager>
     //The save location of the XML
     private string xmlFilePath;
 
+    // List of all XML config files
+    private List<string>xmlConfigFiles = new List<string>();
+    // Property for the config file list
+    public List<string> XmlConfigFiles  { get { return xmlConfigFiles; } private set { } }
+
     // position values to work with the xml file.
 
-    public float posX { get; set; }
-    public float posY { get; set; }
-    public float posZ { get; set; }
+    public float PosX { get; set; }
+    public float PosY { get; set; }
+    public float PosZ { get; set; }
 
     // rotation values to work with the xml file.
-    public float rotW { get; set; }
-    public float rotX { get; set; }
-    public float rotY { get; set; }
-    public float rotZ { get; set; }
+    public float RotW { get; set; }
+    public float RotX { get; set; }
+    public float RotY { get; set; }
+    public float RotZ { get; set; }
 
     // server variables to work with the xml file
-    public string serverIp { get; set; }
-    public string serverPort { get; set; }
-    public string serverTopic { get; set; }
+    public string ServerIp { get; set; }
+    public string ServerPort { get; set; }
+    public string ServerTopic { get; set; }
 
     // Other settings variables to work with the xml file
     public bool IsOccluded { get; set; }
 
+
     private void Start()
-    {  
+    {
+        CheckForConfigFiles();
         InitXmlFile();
     }
-
-
 
     void Awake()
     {
@@ -106,15 +111,15 @@ public class SettingsManager : Singleton<SettingsManager>
 
                 if (settingItem.Name == "serverAddress")
                 {
-                    serverIp = settingItem.InnerText;
+                    ServerIp = settingItem.InnerText;
                 }
                 else if (settingItem.Name == "serverPort")
                 {
-                    serverPort = settingItem.InnerText;
+                    ServerPort = settingItem.InnerText;
                 }
                 else if (settingItem.Name == "serverTopic")
                 {
-                    serverTopic = settingItem.InnerText;
+                    ServerTopic = settingItem.InnerText;
                 }
             }
         }
@@ -144,15 +149,15 @@ public class SettingsManager : Singleton<SettingsManager>
                     {
                         if (positionItem.Name == "x")
                         {
-                            posX = float.Parse(positionItem.InnerText);
+                            PosX = float.Parse(positionItem.InnerText);
                         }
                         else if (positionItem.Name == "y")
                         {
-                            posY = float.Parse(positionItem.InnerText);
+                            PosY = float.Parse(positionItem.InnerText);
                         }
                         else if (positionItem.Name == "z")
                         {
-                            posZ = float.Parse(positionItem.InnerText);
+                            PosZ = float.Parse(positionItem.InnerText);
                         }
                     }
                 }
@@ -164,19 +169,19 @@ public class SettingsManager : Singleton<SettingsManager>
                     {
                         if (rotationItem.Name == "x")
                         {
-                            rotX = float.Parse(rotationItem.InnerText);
+                            RotX = float.Parse(rotationItem.InnerText);
                         }
                         else if (rotationItem.Name == "y")
                         {
-                            rotY = float.Parse(rotationItem.InnerText);
+                            RotY = float.Parse(rotationItem.InnerText);
                         }
                         else if (rotationItem.Name == "z")
                         {
-                            rotZ = float.Parse(rotationItem.InnerText);
+                            RotZ = float.Parse(rotationItem.InnerText);
                         }
                         else if (rotationItem.Name == "w")
                         {
-                            rotW = float.Parse(rotationItem.InnerText);
+                            RotW = float.Parse(rotationItem.InnerText);
                         }
                     }
                 }
@@ -230,15 +235,15 @@ public class SettingsManager : Singleton<SettingsManager>
 
                     // create server address element for ZeroMQ
                     XmlElement elmServerAddress = xmlDoc.CreateElement("serverAddress");
-                    elmServerAddress.InnerText = serverIp;
+                    elmServerAddress.InnerText = ServerIp;
 
                     // create server port element for ZeroMQ
                     XmlElement elmServerPort = xmlDoc.CreateElement("serverPort");
-                    elmServerPort.InnerText = serverPort;
+                    elmServerPort.InnerText = ServerPort;
 
                     // create server topic element for ZeroMQ
                     XmlElement elmServerTopic = xmlDoc.CreateElement("serverTopic");
-                    elmServerTopic.InnerText = serverTopic;
+                    elmServerTopic.InnerText = ServerTopic;
 
 
                     // create origin position offset element
@@ -248,28 +253,28 @@ public class SettingsManager : Singleton<SettingsManager>
                     XmlElement elmPosition = xmlDoc.CreateElement("position");
 
                     XmlElement elmPosX = xmlDoc.CreateElement("x");
-                    elmPosX.InnerText = posX.ToString();
+                    elmPosX.InnerText = PosX.ToString();
 
                     XmlElement elmPosY = xmlDoc.CreateElement("y");
-                    elmPosY.InnerText = posY.ToString();
+                    elmPosY.InnerText = PosY.ToString();
 
                     XmlElement elmPosZ = xmlDoc.CreateElement("z");
-                    elmPosZ.InnerText = posZ.ToString();
+                    elmPosZ.InnerText = PosZ.ToString();
 
                     // create rotation element w/ values
                     XmlElement elmRotation = xmlDoc.CreateElement("rotation");
 
                     XmlElement elmRotW = xmlDoc.CreateElement("w");
-                    elmRotW.InnerText = rotW.ToString();
+                    elmRotW.InnerText = RotW.ToString();
 
                     XmlElement elmRotX = xmlDoc.CreateElement("x");
-                    elmRotX.InnerText = rotX.ToString();
+                    elmRotX.InnerText = RotX.ToString();
 
                     XmlElement elmRotY = xmlDoc.CreateElement("y");
-                    elmRotY.InnerText = rotY.ToString();
+                    elmRotY.InnerText = RotY.ToString();
 
                     XmlElement elmRotZ = xmlDoc.CreateElement("z");
-                    elmRotZ.InnerText = rotZ.ToString();
+                    elmRotZ.InnerText = RotZ.ToString();
 
 
                     // create other settings element
@@ -314,6 +319,24 @@ public class SettingsManager : Singleton<SettingsManager>
                 Debug.Log("Error loading xml file : " + ex.TargetSite);
             }
         }
+    }
+
+    private void CheckForConfigFiles()
+    {
+        foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))
+        {
+            if (file.EndsWith(".xml") || file.EndsWith(".XML"))
+            {
+                xmlConfigFiles.Add(file);
+            }
+            
+        }
+
+        foreach (string path in xmlConfigFiles)
+        {
+            Debug.Log(path);
+        }
+
     }
 
 

@@ -35,26 +35,26 @@ public class HandleOriginOffsetSettings : MonoBehaviour
 
     private void GetOriginOffsetSettings()
     {
-        positionXInputField.text = SettingsManager.Instance.posX.ToString();
-        positionYInputField.text = SettingsManager.Instance.posY.ToString();
-        positionZInputField.text = SettingsManager.Instance.posZ.ToString();
+        positionXInputField.text = SettingsManager.Instance.PosX.ToString();
+        positionYInputField.text = SettingsManager.Instance.PosY.ToString();
+        positionZInputField.text = SettingsManager.Instance.PosZ.ToString();
 
-        rotationXInputField.text = SettingsManager.Instance.rotX.ToString();
-        rotationYInputField.text = SettingsManager.Instance.rotY.ToString();
-        rotationZInputField.text = SettingsManager.Instance.rotZ.ToString();
-        rotationWInputField.text = SettingsManager.Instance.rotW.ToString();
+        rotationXInputField.text = SettingsManager.Instance.RotX.ToString();
+        rotationYInputField.text = SettingsManager.Instance.RotY.ToString();
+        rotationZInputField.text = SettingsManager.Instance.RotZ.ToString();
+        rotationWInputField.text = SettingsManager.Instance.RotW.ToString();
     }
 
     private void SaveOriginOffsetSettings()
     {
-        SettingsManager.Instance.posX = float.Parse(positionXInputField.text);
-        SettingsManager.Instance.posY = float.Parse(positionYInputField.text);
-        SettingsManager.Instance.posZ = float.Parse(positionZInputField.text);
+        SettingsManager.Instance.PosX = float.Parse(positionXInputField.text);
+        SettingsManager.Instance.PosY = float.Parse(positionYInputField.text);
+        SettingsManager.Instance.PosZ = float.Parse(positionZInputField.text);
 
-        SettingsManager.Instance.rotX = float.Parse(rotationXInputField.text);
-        SettingsManager.Instance.rotY = float.Parse(rotationYInputField.text);
-        SettingsManager.Instance.rotZ = float.Parse(rotationZInputField.text);
-        SettingsManager.Instance.rotW = float.Parse(rotationWInputField.text);
+        SettingsManager.Instance.RotX = float.Parse(rotationXInputField.text);
+        SettingsManager.Instance.RotY = float.Parse(rotationYInputField.text);
+        SettingsManager.Instance.RotZ = float.Parse(rotationZInputField.text);
+        SettingsManager.Instance.RotW = float.Parse(rotationWInputField.text);
 
         SettingsManager.Instance.SaveXml();
     }

@@ -28,16 +28,16 @@ public class HandleZeroMqSettings : MonoBehaviour
 
     private void GetZeroMqSettings()
     {
-        serverAdressInputField.text = SettingsManager.Instance.serverIp;
-        serverPortInputField.text = SettingsManager.Instance.serverPort;
-        serverTopicInputField.text = SettingsManager.Instance.serverTopic;
+        serverAdressInputField.text = SettingsManager.Instance.ServerIp;
+        serverPortInputField.text = SettingsManager.Instance.ServerPort;
+        serverTopicInputField.text = SettingsManager.Instance.ServerTopic;
     }
 
     private void SaveZeroMqSettings()
     {
-        SettingsManager.Instance.serverIp = serverAdressInputField.text;
-        SettingsManager.Instance.serverPort = serverPortInputField.text;
-        SettingsManager.Instance.serverTopic = serverTopicInputField.text;
+        SettingsManager.Instance.ServerIp = serverAdressInputField.text;
+        SettingsManager.Instance.ServerPort = serverPortInputField.text;
+        SettingsManager.Instance.ServerTopic = serverTopicInputField.text;
 
         SettingsManager.Instance.SaveXml();
     }

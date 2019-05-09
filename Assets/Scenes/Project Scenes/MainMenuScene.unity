@@ -402,12 +402,12 @@ MonoBehaviour:
   m_Padding:
     m_Left: 40
     m_Right: 40
-    m_Top: 10
-    m_Bottom: 10
-  m_ChildAlignment: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
   m_Spacing: 40
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
 --- !u!114 &881055038
@@ -460,6 +460,7 @@ GameObject:
   - component: {fileID: 951857427}
   - component: {fileID: 951857426}
   - component: {fileID: 951857429}
+  - component: {fileID: 951857430}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -579,7 +580,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonToClick: {fileID: 951857426}
-  sceneToLoad: MainScene
+  sceneToLoad: ARScene
+--- !u!114 &951857430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951857424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: 150
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1070920954
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,6 +657,7 @@ GameObject:
   - component: {fileID: 1197571472}
   - component: {fileID: 1197571471}
   - component: {fileID: 1197571474}
+  - component: {fileID: 1197571475}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -755,7 +777,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonToClick: {fileID: 1197571471}
-  sceneToLoad: SettingsScene
+  sceneToLoad: SettingsSelectorScene
+--- !u!114 &1197571475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197571469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: 150
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1633401785
 GameObject:
   m_ObjectHideFlags: 0

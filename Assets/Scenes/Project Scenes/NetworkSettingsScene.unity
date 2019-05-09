@@ -1700,7 +1700,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonToClick: {fileID: 1628140050}
-  sceneToLoad: SettingsScene
+  sceneToLoad: SettingsSelectorScene
 --- !u!114 &1628140050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2413,7 +2413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonToClick: {fileID: 2119224011}
-  sceneToLoad: SettingsScene
+  sceneToLoad: SettingsSelectorScene
 --- !u!114 &2119224011
 MonoBehaviour:
   m_ObjectHideFlags: 0

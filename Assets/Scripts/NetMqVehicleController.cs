@@ -167,24 +167,24 @@ public class NetMqVehicleController : MonoBehaviour
 
     private void GetNetMqSettings()
     {
-        serverIp = SettingsManager.Instance.serverIp;
-        serverPort = SettingsManager.Instance.serverPort;
-        serverTopic = SettingsManager.Instance.serverTopic;
+        serverIp = SettingsManager.Instance.ServerIp;
+        serverPort = SettingsManager.Instance.ServerPort;
+        serverTopic = SettingsManager.Instance.ServerTopic;
         serverAddress = "tcp://" + serverIp + ":" + serverPort;
     }
 
     private void SetupOriginOffset()
     {
         originOffsetPosition = new UnityEngine.Vector3(
-            SettingsManager.Instance.posX,
-            SettingsManager.Instance.posY,
-            SettingsManager.Instance.posZ);
+            SettingsManager.Instance.PosX,
+            SettingsManager.Instance.PosY,
+            SettingsManager.Instance.PosZ);
 
         originOffsetRotation = new UnityEngine.Quaternion(
-            SettingsManager.Instance.rotW,
-            SettingsManager.Instance.rotX,
-            SettingsManager.Instance.rotY,
-            SettingsManager.Instance.rotZ);
+            SettingsManager.Instance.RotW,
+            SettingsManager.Instance.RotX,
+            SettingsManager.Instance.RotY,
+            SettingsManager.Instance.RotZ);
     }
 
 }
