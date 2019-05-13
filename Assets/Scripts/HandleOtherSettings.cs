@@ -31,6 +31,6 @@ public class HandleOtherSettings : MonoBehaviour
     {
         SettingsManager.Instance.IsOccluded = occlusionToggle.isOn;
         
-        SettingsManager.Instance.SaveXml();
+        SettingsManager.Instance.SaveXmlAt(SettingsManager.Instance.XmlFilePath);
     }
 }

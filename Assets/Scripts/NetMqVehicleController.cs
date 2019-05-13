@@ -68,7 +68,7 @@ public class NetMqVehicleController : MonoBehaviour
         GetNetMqSettings();
         SetupOriginOffset();
 
-        _netMqListener = new NetMqListener(HandleMessage, serverAddress, serverTopic);
+        _netMqListener = new NetMqListener(HandleNetMqMessage, serverAddress, serverTopic);
         _netMqListener.Start();
         vehicleIds = new List<int>();
     }
@@ -94,7 +94,9 @@ public class NetMqVehicleController : MonoBehaviour
         _netMqListener.Stop();
     }
 
-    private void HandleMessage(byte[] message)
+
+    // This method gets called everytime there is a new message from the NetMQ listener
+    private void HandleNetMqMessage(byte[] message)
     {
         var text = SendReceiveConstants.DefaultEncoding.GetString(message);
 

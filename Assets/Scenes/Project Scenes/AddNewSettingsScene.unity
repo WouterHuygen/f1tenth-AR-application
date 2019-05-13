@@ -2258,7 +2258,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Settings name
+  m_Text: Config name
 --- !u!222 &862149234
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2985,7 +2985,7 @@ GameObject:
   - component: {fileID: 1182852134}
   - component: {fileID: 1182852133}
   m_Layer: 5
-  m_Name: CreateSettingsButton
+  m_Name: CreateConfigButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3376,7 +3376,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Enter a settings name
+  m_Text: Enter a config name
 --- !u!222 &1450764157
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4001,6 +4001,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1640357529}
+  - component: {fileID: 1640357530}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -4022,6 +4023,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1640357530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640357528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5df2deb01c515bc41b59ef9b58e0dcd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  configNameInputField: {fileID: 1810191926}
+  serverIpInputField: {fileID: 1723198525}
+  serverPortInputField: {fileID: 1897880218}
+  serverTopicInputField: {fileID: 872163827}
+  positionXInputField: {fileID: 1728040448}
+  positionYInputField: {fileID: 778921982}
+  positionZInputField: {fileID: 1260622851}
+  rotationXInputField: {fileID: 537377884}
+  rotationYInputField: {fileID: 2031804418}
+  rotationZInputField: {fileID: 299328415}
+  rotationWInputField: {fileID: 862756294}
+  occlusionToggle: {fileID: 1768650701}
+  createConfigButton: {fileID: 1182852134}
 --- !u!1 &1703312866
 GameObject:
   m_ObjectHideFlags: 0
@@ -5080,7 +5106,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Create
 
-    Settings'
+    Config'
 --- !u!222 &1804228112
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5102,7 +5128,7 @@ GameObject:
   - component: {fileID: 1810191927}
   - component: {fileID: 1810191926}
   m_Layer: 5
-  m_Name: SettingsNameInputField
+  m_Name: ConfigNameInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,12 +11,20 @@ public class SettingsManager : Singleton<SettingsManager>
     protected SettingsManager() { }
 
     //The save location of the XML
-    private string xmlFilePath;
+    public string XmlFilePath { get; set; }
+
+    // The name of the current config file
+    public string ConfigFileName { get; set; }
+
+    // List of all XML config file paths
+    private List<string>xmlConfigFilePaths = new List<string>();
+    // Property for the config file path list
+    public List<string> XmlConfigFilePaths  { get { return xmlConfigFilePaths; } private set { } }
 
     // List of all XML config files
-    private List<string>xmlConfigFiles = new List<string>();
+    private List<string>xmlConfigFileNames = new List<string>();
     // Property for the config file list
-    public List<string> XmlConfigFiles  { get { return xmlConfigFiles; } private set { } }
+    public List<string> XmlConfigFileNames { get { return xmlConfigFileNames; } private set { } }
 
     // position values to work with the xml file.
 
@@ -53,30 +61,29 @@ public class SettingsManager : Singleton<SettingsManager>
     private void InitXmlFile()
     {
         // Set xml file location and create a new xml file if there isn't one
-        xmlFilePath = Application.persistentDataPath + @"/AR-F1TENTH-SETTINGS.xml";
+        XmlFilePath = Application.persistentDataPath + @"/thebeacon_config_1.xml";
 
-        if (!File.Exists(xmlFilePath))
+        if (!File.Exists(XmlFilePath))
         {
-            CreateXml();
-            Debug.Log("XML settings file created at " + xmlFilePath);
+            CreateBasicXmlFile(XmlFilePath);
+            SaveXmlAt(XmlFilePath);
+            Debug.Log("XML settings file created at " + XmlFilePath);
         }
         else
         {
-            LoadZeroMqSettingsFromXml();
-            LoadOriginOffsetSettingsFromXml();
-            LoadOtherSettingsFromXml();
-            Debug.Log("XML settings loaded from " + xmlFilePath);
+            LoadXmlFile(XmlFilePath);
+            Debug.Log("XML settings loaded from " + XmlFilePath);
         }
     }
 
-    private void CreateXml()
+    public void CreateBasicXmlFile(string filePath)
     {
         try
         {
-            File.Create(xmlFilePath).Dispose(); // Break the stream with file immediately after file creation
+            File.Create(filePath).Dispose(); // Break the stream with file immediately after file creation
             try
             {
-                using (StreamWriter sW = new StreamWriter(xmlFilePath))
+                using (StreamWriter sW = new StreamWriter(filePath))
                 { // Initializing XML file
                     sW.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     sW.WriteLine("<dataRoot>");
@@ -94,11 +101,34 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    private void LoadZeroMqSettingsFromXml()
+    private void LoadXmlFile(string filePath)
+    {
+        //XmlConfigFile currentLoadedFile = new XmlConfigFile();
+
+        LoadConfigFileNameFromXml(filePath);
+        LoadZeroMqConfigFromXml(filePath);
+        LoadOriginOffsetConfigFromXml(filePath);
+        LoadOcclusionConfigFromXml(filePath);
+    }
+
+    public void LoadConfigFileNameFromXml(string filePath)
     {
         XmlDocument xmlDoc = new XmlDocument();
 
-        xmlDoc.Load(xmlFilePath);
+        xmlDoc.Load(filePath);  
+
+        foreach (XmlElement xmlElement in xmlDoc.DocumentElement.SelectNodes("configFileName"))
+        {
+            ConfigFileName = xmlElement.InnerText;
+            //xmlConfigFileNames.Add(xmlElement.InnerText);
+        }
+    }
+
+    private void LoadZeroMqConfigFromXml(string filePath)
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+
+        xmlDoc.Load(filePath);
 
         XmlNodeList zeroMqSettingsList = xmlDoc.GetElementsByTagName("zeroMq");
 
@@ -123,14 +153,13 @@ public class SettingsManager : Singleton<SettingsManager>
                 }
             }
         }
-        
     }
 
-    private void LoadOriginOffsetSettingsFromXml()
+    private void LoadOriginOffsetConfigFromXml(string filePath)
     {
         XmlDocument xmlDoc = new XmlDocument();
 
-        xmlDoc.Load(xmlFilePath);
+        xmlDoc.Load(filePath);
 
         XmlNodeList originOffsetSettingsList = xmlDoc.GetElementsByTagName("originOffset");
 
@@ -189,11 +218,11 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    private void LoadOtherSettingsFromXml()
+    private void LoadOcclusionConfigFromXml(string filePath)
     {
         XmlDocument xmlDoc = new XmlDocument();
 
-        xmlDoc.Load(xmlFilePath);
+        xmlDoc.Load(filePath);
 
         XmlNodeList otherSettingsList = xmlDoc.GetElementsByTagName("otherSettings");
 
@@ -213,15 +242,16 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    public void SaveXml()
+
+    public void SaveXmlAt(string filePath)
     {
         XmlDocument xmlDoc = new XmlDocument();
 
-        if (File.Exists(xmlFilePath))
+        if (File.Exists(filePath))
         {
             try
             {
-                xmlDoc.Load(xmlFilePath);
+                xmlDoc.Load(filePath);
                 try
                 {
                     XmlElement elmRoot = xmlDoc.DocumentElement;
@@ -229,6 +259,9 @@ public class SettingsManager : Singleton<SettingsManager>
                     // cleanup existing elements inside Root
                     elmRoot.RemoveAll();
 
+                    // create config file name
+                    XmlElement elmConfigFileName = xmlDoc.CreateElement("configFileName");
+                    elmConfigFileName.InnerText = ConfigFileName;
 
                     // create zeroMQ element
                     XmlElement elmZeroMq = xmlDoc.CreateElement("zeroMq");
@@ -283,9 +316,10 @@ public class SettingsManager : Singleton<SettingsManager>
                     XmlElement elmOcclusion = xmlDoc.CreateElement("IsOccluded");
                     elmOcclusion.InnerText = IsOccluded.ToString();
 
-                    // append childs
-                    elmRoot.AppendChild(elmOriginOffset);
+                    // append children
+                    elmRoot.AppendChild(elmConfigFileName);
                     elmRoot.AppendChild(elmZeroMq);
+                    elmRoot.AppendChild(elmOriginOffset);
                     elmRoot.AppendChild(elmOtherSettings);
 
                     elmZeroMq.AppendChild(elmServerAddress);
@@ -307,7 +341,7 @@ public class SettingsManager : Singleton<SettingsManager>
                     elmRotation.AppendChild(elmRotZ);
 
                     // save file
-                    xmlDoc.Save(xmlFilePath);
+                    xmlDoc.Save(filePath);
                 }
                 catch (IOException ex)
                 {
@@ -316,28 +350,31 @@ public class SettingsManager : Singleton<SettingsManager>
             }
             catch (IOException ex)
             {
-                Debug.Log("Error loading xml file : " + ex.TargetSite);
+                Debug.Log("Error, no xml file exists at this location : " + ex.TargetSite);
             }
         }
     }
 
-    private void CheckForConfigFiles()
+    public void CheckForConfigFiles()
     {
         foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))
         {
-            if (file.EndsWith(".xml") || file.EndsWith(".XML"))
+            if (!xmlConfigFilePaths.Contains(file) && file.EndsWith(".xml") || file.EndsWith(".XML"))
             {
-                xmlConfigFiles.Add(file);
+                xmlConfigFilePaths.Add(file);
+                
             }
             
         }
 
-        foreach (string path in xmlConfigFiles)
+        foreach (string path in xmlConfigFilePaths)
         {
             Debug.Log(path);
         }
 
     }
+
+    
 
 
 

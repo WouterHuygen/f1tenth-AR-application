@@ -11,16 +11,19 @@ public class LoadConfigFiles : MonoBehaviour
 
     private void Start()
     {
-        
+        SettingsManager.Instance.CheckForConfigFiles();
+        CreateConfigButtons();
     }
 
     private void CreateConfigButtons()
     {
-        for (int i = 0; i < SettingsManager.Instance.XmlConfigFiles.Count; i++)
+        for (int i = 0; i < SettingsManager.Instance.XmlConfigFilePaths.Count; i++)
         {
             Button _configButton = (Button)Instantiate(configButtonPrefab);
-            // WIP
+            _configButton.GetComponentInChildren<Text>().text = SettingsManager.Instance.XmlConfigFilePaths[i];
             _configButton.transform.SetParent(content.transform, false);
+
+
         }
     }
 }

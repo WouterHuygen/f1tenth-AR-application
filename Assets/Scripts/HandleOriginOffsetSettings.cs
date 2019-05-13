@@ -56,6 +56,6 @@ public class HandleOriginOffsetSettings : MonoBehaviour
         SettingsManager.Instance.RotZ = float.Parse(rotationZInputField.text);
         SettingsManager.Instance.RotW = float.Parse(rotationWInputField.text);
 
-        SettingsManager.Instance.SaveXml();
+        SettingsManager.Instance.SaveXmlAt(SettingsManager.Instance.XmlFilePath);
     }
 }
