@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class AddNewSettings : MonoBehaviour
@@ -28,32 +27,52 @@ public class AddNewSettings : MonoBehaviour
     [Header("Occlusion Checkbox")]
     public Toggle occlusionToggle;
 
-    [Header("Navigation Buttons")]
+    [Header("Navigation")]
     public Button createConfigButton;
+    public string sceneToLoadAfterConfigCreation;
+
+    [Header("Modal Panel")]
+    public ModalPanel modalPanel;
+
+    private List<InputField> inputFieldsList = new List<InputField>();
 
     void Start()
     {
         //Calls the TaskOnClick method when you click the Button
         createConfigButton.onClick.AddListener(TaskOnClick);
+
+        // Adds all input fields to a list
+        MakeListOfInputFields();
     }
 
     private void TaskOnClick()
     {
+
         CreateNewConfig();
     }
 
     private void CreateNewConfig()
     {
+        if (InputIsEmpty())
+        {
+            modalPanel.SetAlertMessage("Please fill in all configuration fields");
+        }
+        else
+        {
+            SetConfigFilePath();
+            SaveZeroMqSettings();
+            SaveOriginOffsetSettings();
+            SaveOcclusionSettings();
+
+            SettingsManager.Instance.CreateBasicXmlFile(SettingsManager.Instance.XmlFilePath);
+            SettingsManager.Instance.SaveXmlAt(SettingsManager.Instance.XmlFilePath);
+
+            Debug.Log("New config file created at " + SettingsManager.Instance.XmlFilePath);
+
+            // Set the scene back to the settings selector scene
+            SceneManager.LoadScene(sceneToLoadAfterConfigCreation, LoadSceneMode.Single);
+        }
         
-        SetConfigFilePath();
-        SaveZeroMqSettings();
-        SaveOriginOffsetSettings();
-        SaveOcclusionSettings();
-
-        SettingsManager.Instance.CreateBasicXmlFile(SettingsManager.Instance.XmlFilePath);
-        SettingsManager.Instance.SaveXmlAt(SettingsManager.Instance.XmlFilePath);
-
-        Debug.Log("New config file created at " + SettingsManager.Instance.XmlFilePath);
 
         //if (!SettingsManager.Instance.XmlConfigFiles.Contains(SettingsManager.Instance.XmlFilePath))
         //{
@@ -95,5 +114,39 @@ public class AddNewSettings : MonoBehaviour
     private void SaveOcclusionSettings()
     {
         SettingsManager.Instance.IsOccluded = occlusionToggle.isOn;
+    }
+
+    private bool InputIsEmpty()
+    {
+        bool IsEmpty = false;
+
+        foreach (InputField inputField in inputFieldsList)
+        {
+            if (inputField.text == "")
+            {
+                IsEmpty = true;
+                break;
+            }
+        }
+
+        return IsEmpty;
+    }
+
+    private void MakeListOfInputFields()
+    {
+        inputFieldsList.Add(configNameInputField);
+
+        inputFieldsList.Add(serverIpInputField);
+        inputFieldsList.Add(serverPortInputField);
+        inputFieldsList.Add(serverTopicInputField);
+
+        inputFieldsList.Add(positionXInputField);
+        inputFieldsList.Add(positionYInputField);
+        inputFieldsList.Add(positionZInputField);
+
+        inputFieldsList.Add(rotationXInputField);
+        inputFieldsList.Add(rotationYInputField);
+        inputFieldsList.Add(rotationZInputField);
+        inputFieldsList.Add(rotationWInputField);
     }
 }
