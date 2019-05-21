@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonToClick: {fileID: 333053535}
-  sceneToLoad: CurrentSettingsScene
+  sceneToLoad: EditCurrentSettingsScene
 --- !u!1 &358152746
 GameObject:
   m_ObjectHideFlags: 0

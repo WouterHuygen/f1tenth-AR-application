@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class AddNewSettings : MonoBehaviour
+public class EditCurrentSettings : MonoBehaviour
 {
-    [Header("Config Name Inputfield")]
-    public InputField configNameInputField;
+    [Header("Config Name Text Field")]
+    public Text configNameText;
 
     [Header("ZeroMQ Server Input Fields")]
     public InputField serverIpInputField;
@@ -28,8 +29,8 @@ public class AddNewSettings : MonoBehaviour
     public Toggle occlusionToggle;
 
     [Header("Navigation")]
-    public Button createConfigButton;
-    public string sceneToLoadAfterConfigCreation;
+    public Button editConfigButton;
+    public string sceneToLoadAfterConfigEdit;
 
     [Header("Modal Panel")]
     public ModalPanel modalPanel;
@@ -38,8 +39,13 @@ public class AddNewSettings : MonoBehaviour
 
     void Start()
     {
+        LoadConfigNameFromSettingsManager();
+        LoadZeroMqSettingsFromSettingsManager();
+        LoadOriginOffsetSettingsFromSettingsManager();
+        LoadOcclusionSettingsFromSettingsManager();
+
         //Calls the TaskOnClick method when you click the Button
-        createConfigButton.onClick.AddListener(TaskOnClick);
+        editConfigButton.onClick.AddListener(TaskOnClick);
 
         // Adds all input fields to a list
         MakeListOfInputFields();
@@ -48,10 +54,10 @@ public class AddNewSettings : MonoBehaviour
     private void TaskOnClick()
     {
 
-        CreateConfig();
+        EditConfig();
     }
 
-    private void CreateConfig()
+    private void EditConfig()
     {
         if (InputIsEmpty())
         {
@@ -64,37 +70,18 @@ public class AddNewSettings : MonoBehaviour
         //}
         else
         {
-            SetConfigFilePath();
             SetZeroMqSettings();
             SetOriginOffsetSettings();
             SetOcclusionSettings();
 
-            SettingsManager.Instance.CreateBasicXmlFile(SettingsManager.Instance.ConfigFilePath);
             SettingsManager.Instance.WriteToXml(SettingsManager.Instance.ConfigFilePath);
 
-            Debug.Log("New config file created at " + SettingsManager.Instance.ConfigFilePath);
+            Debug.Log("File edited at " + SettingsManager.Instance.ConfigFilePath);
 
             // Set the scene back to the settings selector scene
-            SceneManager.LoadScene(sceneToLoadAfterConfigCreation, LoadSceneMode.Single);
+            SceneManager.LoadScene(sceneToLoadAfterConfigEdit, LoadSceneMode.Single);
         }
-        
 
-        //if (!SettingsManager.Instance.XmlConfigFiles.Contains(SettingsManager.Instance.XmlFilePath))
-        //{
-        //    SettingsManager.Instance.CreateBasicXmlFile(SettingsManager.Instance.XmlFilePath);
-        //    SettingsManager.Instance.SaveXmlAt(SettingsManager.Instance.XmlFilePath);
-        //}
-        //else
-        //{
-        //    Debug.Log("There is already a config file called: " + SettingsManager.Instance.ConfigFileName);
-        //}
-
-    }
-
-    private void SetConfigFilePath()
-    {
-        SettingsManager.Instance.ConfigFileName = configNameInputField.text;
-        SettingsManager.Instance.ConfigFilePath = Application.persistentDataPath + "/" + SettingsManager.Instance.ConfigFileName + ".xml";
     }
 
     private void SetZeroMqSettings()
@@ -121,6 +108,35 @@ public class AddNewSettings : MonoBehaviour
         SettingsManager.Instance.IsOccluded = occlusionToggle.isOn;
     }
 
+    private void LoadZeroMqSettingsFromSettingsManager()
+    {
+        serverIpInputField.text = SettingsManager.Instance.ServerIp;
+        serverPortInputField.text = SettingsManager.Instance.ServerPort;
+        serverTopicInputField.text = SettingsManager.Instance.ServerTopic;
+    }
+
+    private void LoadOriginOffsetSettingsFromSettingsManager()
+    {
+        positionXInputField.text = SettingsManager.Instance.PosX.ToString();
+        positionYInputField.text = SettingsManager.Instance.PosY.ToString();
+        positionZInputField.text = SettingsManager.Instance.PosZ.ToString();
+
+        rotationXInputField.text = SettingsManager.Instance.RotX.ToString();
+        rotationYInputField.text = SettingsManager.Instance.RotY.ToString();
+        rotationZInputField.text = SettingsManager.Instance.RotZ.ToString();
+        rotationWInputField.text = SettingsManager.Instance.RotW.ToString();
+    }
+
+    private void LoadOcclusionSettingsFromSettingsManager()
+    {
+        occlusionToggle.isOn = SettingsManager.Instance.IsOccluded;
+    }
+
+    private void LoadConfigNameFromSettingsManager()
+    {
+        configNameText.text = SettingsManager.Instance.ConfigFileName;
+    }
+
     private bool InputIsEmpty()
     {
         bool IsEmpty = false;
@@ -139,8 +155,6 @@ public class AddNewSettings : MonoBehaviour
 
     private void MakeListOfInputFields()
     {
-        inputFieldsList.Add(configNameInputField);
-
         inputFieldsList.Add(serverIpInputField);
         inputFieldsList.Add(serverPortInputField);
         inputFieldsList.Add(serverTopicInputField);

@@ -444,7 +444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonToClick: {fileID: 670035344}
-  sceneToLoad: SettingsSelectorScene
+  sceneToLoad: CurrentSettingsScene
 --- !u!114 &670035344
 MonoBehaviour:
   m_ObjectHideFlags: 0

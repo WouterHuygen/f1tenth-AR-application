@@ -11,7 +11,7 @@ public class SettingsManager : Singleton<SettingsManager>
     protected SettingsManager() { }
 
     //The save location of the XML
-    public string XmlFilePath { get; set; }
+    public string ConfigFilePath { get; set; }
 
     // The name of the current config file
     public string ConfigFileName { get; set; }
@@ -46,33 +46,37 @@ public class SettingsManager : Singleton<SettingsManager>
     // Other settings variables to work with the xml file
     public bool IsOccluded { get; set; }
 
+    // A boolean to check if the SceneManager was initialized
+    public bool IsInitialized { get; set; }
 
     private void Start()
+    {
+        SetupSettingsManager();
+    }
+
+    private void SetupSettingsManager()
     {
         CheckForConfigFiles();
         InitXmlFile();
     }
 
-    void Awake()
-    {
-        DontDestroyOnLoad(transform.gameObject);
-    }
-
     private void InitXmlFile()
     {
-        // Set xml file location and create a new xml file if there isn't one
-        XmlFilePath = Application.persistentDataPath + @"/thebeacon_config_1.xml";
+        // Set xml file location to the standard setting file
+        ConfigFilePath = Application.persistentDataPath + @"/thebeacon_config_1.xml";
 
-        if (!File.Exists(XmlFilePath))
+        // Create a new xml file if there isn't one
+        if (!File.Exists(ConfigFilePath))
         {
-            CreateBasicXmlFile(XmlFilePath);
-            SaveXmlAt(XmlFilePath);
-            Debug.Log("XML settings file created at " + XmlFilePath);
+            CreateBasicXmlFile(ConfigFilePath);
+            WriteToXml(ConfigFilePath);
+            Debug.Log("XML settings file created at " + ConfigFilePath);
         }
+        // Else load the excisting file
         else
         {
-            LoadXmlFile(XmlFilePath);
-            Debug.Log("XML settings loaded from " + XmlFilePath);
+            LoadXmlFile(ConfigFilePath);
+            Debug.Log("XML settings loaded from " + ConfigFilePath);
         }
     }
 
@@ -101,27 +105,25 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    private void LoadXmlFile(string filePath)
+    public void LoadXmlFile(string filePath)
     {
-        //XmlConfigFile currentLoadedFile = new XmlConfigFile();
-
-        LoadConfigFileNameFromXml(filePath);
+        ConfigFileName = LoadConfigFileNameFromXml(filePath);
         LoadZeroMqConfigFromXml(filePath);
         LoadOriginOffsetConfigFromXml(filePath);
         LoadOcclusionConfigFromXml(filePath);
     }
 
-    public void LoadConfigFileNameFromXml(string filePath)
+    private string LoadConfigFileNameFromXml(string filePath)
     {
         XmlDocument xmlDoc = new XmlDocument();
 
-        xmlDoc.Load(filePath);  
+        xmlDoc.Load(filePath);
 
-        foreach (XmlElement xmlElement in xmlDoc.DocumentElement.SelectNodes("configFileName"))
-        {
-            ConfigFileName = xmlElement.InnerText;
-            //xmlConfigFileNames.Add(xmlElement.InnerText);
-        }
+        XmlNodeList elemList = xmlDoc.GetElementsByTagName("configFileName");
+
+        string configName = elemList[0].InnerText;
+
+        return configName;
     }
 
     private void LoadZeroMqConfigFromXml(string filePath)
@@ -243,7 +245,7 @@ public class SettingsManager : Singleton<SettingsManager>
     }
 
 
-    public void SaveXmlAt(string filePath)
+    public void WriteToXml(string filePath)
     {
         XmlDocument xmlDoc = new XmlDocument();
 
@@ -355,23 +357,17 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
+    // Checks for excisting config files in the persistent data path of the application 
     public void CheckForConfigFiles()
     {
+        // Adds all config file paths and names to a list
         foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))
         {
             if (!xmlConfigFilePaths.Contains(file) && file.EndsWith(".xml") || file.EndsWith(".XML"))
             {
                 xmlConfigFilePaths.Add(file);
-                
+                xmlConfigFileNames.Add(LoadConfigFileNameFromXml(file));
             }
-            
         }
-
-        foreach (string path in xmlConfigFilePaths)
-        {
-            Debug.Log(path);
-        }
-
     }
-
 }

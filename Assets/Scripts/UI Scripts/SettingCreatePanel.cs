@@ -1,31 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class AddNewSettings : MonoBehaviour
+public class SettingCreatePanel : SettingPanel
 {
     [Header("Config Name Inputfield")]
     public InputField configNameInputField;
-
-    [Header("ZeroMQ Server Input Fields")]
-    public InputField serverIpInputField;
-    public InputField serverPortInputField;
-    public InputField serverTopicInputField;
-
-    [Header("Position Input Fields")]
-    public InputField positionXInputField;
-    public InputField positionYInputField;
-    public InputField positionZInputField;
-
-    [Header("Rotation Input Fields")]
-    public InputField rotationXInputField;
-    public InputField rotationYInputField;
-    public InputField rotationZInputField;
-    public InputField rotationWInputField;
-
-    [Header("Occlusion Checkbox")]
-    public Toggle occlusionToggle;
 
     [Header("Navigation")]
     public Button createConfigButton;
@@ -65,9 +47,9 @@ public class AddNewSettings : MonoBehaviour
         else
         {
             SetConfigFilePath();
-            SetZeroMqSettings();
-            SetOriginOffsetSettings();
-            SetOcclusionSettings();
+            SaveZeroMqSettings();
+            SaveOriginOffsetSettings();
+            SaveOcclusionSettings();
 
             SettingsManager.Instance.CreateBasicXmlFile(SettingsManager.Instance.ConfigFilePath);
             SettingsManager.Instance.WriteToXml(SettingsManager.Instance.ConfigFilePath);
@@ -77,48 +59,12 @@ public class AddNewSettings : MonoBehaviour
             // Set the scene back to the settings selector scene
             SceneManager.LoadScene(sceneToLoadAfterConfigCreation, LoadSceneMode.Single);
         }
-        
-
-        //if (!SettingsManager.Instance.XmlConfigFiles.Contains(SettingsManager.Instance.XmlFilePath))
-        //{
-        //    SettingsManager.Instance.CreateBasicXmlFile(SettingsManager.Instance.XmlFilePath);
-        //    SettingsManager.Instance.SaveXmlAt(SettingsManager.Instance.XmlFilePath);
-        //}
-        //else
-        //{
-        //    Debug.Log("There is already a config file called: " + SettingsManager.Instance.ConfigFileName);
-        //}
-
     }
 
-    private void SetConfigFilePath()
+    public override void SetConfigFilePath()
     {
         SettingsManager.Instance.ConfigFileName = configNameInputField.text;
         SettingsManager.Instance.ConfigFilePath = Application.persistentDataPath + "/" + SettingsManager.Instance.ConfigFileName + ".xml";
-    }
-
-    private void SetZeroMqSettings()
-    {
-        SettingsManager.Instance.ServerIp = serverIpInputField.text;
-        SettingsManager.Instance.ServerPort = serverPortInputField.text;
-        SettingsManager.Instance.ServerTopic = serverTopicInputField.text;
-    }
-
-    private void SetOriginOffsetSettings()
-    {
-        SettingsManager.Instance.PosX = float.Parse(positionXInputField.text);
-        SettingsManager.Instance.PosY = float.Parse(positionYInputField.text);
-        SettingsManager.Instance.PosZ = float.Parse(positionZInputField.text);
-
-        SettingsManager.Instance.RotX = float.Parse(rotationXInputField.text);
-        SettingsManager.Instance.RotY = float.Parse(rotationYInputField.text);
-        SettingsManager.Instance.RotZ = float.Parse(rotationZInputField.text);
-        SettingsManager.Instance.RotW = float.Parse(rotationWInputField.text);
-    }
-
-    private void SetOcclusionSettings()
-    {
-        SettingsManager.Instance.IsOccluded = occlusionToggle.isOn;
     }
 
     private bool InputIsEmpty()

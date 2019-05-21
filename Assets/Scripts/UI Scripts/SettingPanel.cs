@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HandleOriginOffsetSettings : MonoBehaviour
+public class SettingPanel : MonoBehaviour
 {
+    [Header("ZeroMQ Server Input Fields")]
+    public InputField serverIpInputField;
+    public InputField serverPortInputField;
+    public InputField serverTopicInputField;
+
     [Header("Position Input Fields")]
     public InputField positionXInputField;
     public InputField positionYInputField;
@@ -17,35 +21,30 @@ public class HandleOriginOffsetSettings : MonoBehaviour
     public InputField rotationZInputField;
     public InputField rotationWInputField;
 
-    [Header("Other")]
-    public Button saveButton;
+    [Header("Occlusion Checkbox")]
+    public Toggle occlusionToggle;
 
-    private void Start()
+
+    public virtual void SetConfigFilePath()
     {
-        GetOriginOffsetSettings();
 
-        //Calls the TaskOnClick method when you click the Button
-        saveButton.onClick.AddListener(TaskOnClick);
     }
 
-    void TaskOnClick()
+    protected void SaveSettings()
     {
+        SaveZeroMqSettings();
         SaveOriginOffsetSettings();
+        SaveOcclusionSettings();
     }
 
-    private void GetOriginOffsetSettings()
+    protected void SaveZeroMqSettings()
     {
-        positionXInputField.text = SettingsManager.Instance.PosX.ToString();
-        positionYInputField.text = SettingsManager.Instance.PosY.ToString();
-        positionZInputField.text = SettingsManager.Instance.PosZ.ToString();
-
-        rotationXInputField.text = SettingsManager.Instance.RotX.ToString();
-        rotationYInputField.text = SettingsManager.Instance.RotY.ToString();
-        rotationZInputField.text = SettingsManager.Instance.RotZ.ToString();
-        rotationWInputField.text = SettingsManager.Instance.RotW.ToString();
+        SettingsManager.Instance.ServerIp = serverIpInputField.text;
+        SettingsManager.Instance.ServerPort = serverPortInputField.text;
+        SettingsManager.Instance.ServerTopic = serverTopicInputField.text;
     }
 
-    private void SaveOriginOffsetSettings()
+    protected void SaveOriginOffsetSettings()
     {
         SettingsManager.Instance.PosX = float.Parse(positionXInputField.text);
         SettingsManager.Instance.PosY = float.Parse(positionYInputField.text);
@@ -55,7 +54,10 @@ public class HandleOriginOffsetSettings : MonoBehaviour
         SettingsManager.Instance.RotY = float.Parse(rotationYInputField.text);
         SettingsManager.Instance.RotZ = float.Parse(rotationZInputField.text);
         SettingsManager.Instance.RotW = float.Parse(rotationWInputField.text);
+    }
 
-        SettingsManager.Instance.WriteToXml(SettingsManager.Instance.ConfigFilePath);
+    protected void SaveOcclusionSettings()
+    {
+        SettingsManager.Instance.IsOccluded = occlusionToggle.isOn;
     }
 }

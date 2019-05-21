@@ -783,6 +783,7 @@ MonoBehaviour:
   content: {fileID: 718761944}
   configButtonPrefab: {fileID: 441265085348459657, guid: 3d81c0c5351cd67479fddf7186a3d3c3,
     type: 3}
+  sceneToLoadAfterConfigSwitch: SettingsSelectorScene
 --- !u!1 &1404843560
 GameObject:
   m_ObjectHideFlags: 0

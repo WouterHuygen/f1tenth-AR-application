@@ -39,6 +39,6 @@ public class HandleZeroMqSettings : MonoBehaviour
         SettingsManager.Instance.ServerPort = serverPortInputField.text;
         SettingsManager.Instance.ServerTopic = serverTopicInputField.text;
 
-        SettingsManager.Instance.SaveXmlAt(SettingsManager.Instance.XmlFilePath);
+        SettingsManager.Instance.WriteToXml(SettingsManager.Instance.ConfigFilePath);
     }
 }
