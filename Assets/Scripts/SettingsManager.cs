@@ -70,8 +70,19 @@ public class SettingsManager : Singleton<SettingsManager>
         {
             InitNewXmlFile(ConfigFilePath);
 
-            // Set the name variable of the default config file
+            // Set the variables to the default values
             ConfigFileName = "default_config";
+
+            RotW = 1;
+            RotX = 1;
+            RotY = 1;
+            RotZ = 1;
+
+            ServerIp = "143.129.39.59";
+            ServerPort = "5555";
+            ServerTopic = "pose";
+
+            IsOccluded = false;
 
             // Creates XML elements with the current SettingsManager variables
             // If these values are empty the xml element will be initialised empty
