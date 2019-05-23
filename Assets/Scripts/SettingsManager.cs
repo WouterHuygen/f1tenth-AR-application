@@ -56,19 +56,25 @@ public class SettingsManager : Singleton<SettingsManager>
 
     private void SetupSettingsManager()
     {
-        CheckForConfigFiles();
-        InitXmlFile();
+        CheckForExistingConfigFiles();
+        InitDefaultXmlFile();
     }
 
-    private void InitXmlFile()
+    private void InitDefaultXmlFile()
     {
         // Set xml file location to the standard setting file
-        ConfigFilePath = Application.persistentDataPath + @"/thebeacon_config_1.xml";
+        ConfigFilePath = Application.persistentDataPath + @"/default_config.xml";
 
         // Create a new xml file if there isn't one
         if (!File.Exists(ConfigFilePath))
         {
-            CreateBasicXmlFile(ConfigFilePath);
+            InitNewXmlFile(ConfigFilePath);
+
+            // Set the name variable of the default config file
+            ConfigFileName = "default_config";
+
+            // Creates XML elements with the current SettingsManager variables
+            // If these values are empty the xml element will be initialised empty
             WriteToXml(ConfigFilePath);
             Debug.Log("XML settings file created at " + ConfigFilePath);
         }
@@ -80,7 +86,7 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    public void CreateBasicXmlFile(string filePath)
+    public void InitNewXmlFile(string filePath)
     {
         try
         {
@@ -358,7 +364,7 @@ public class SettingsManager : Singleton<SettingsManager>
     }
 
     // Checks for excisting config files in the persistent data path of the application 
-    public void CheckForConfigFiles()
+    public void CheckForExistingConfigFiles()
     {
         // Adds all config file paths and names to a list
         foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))

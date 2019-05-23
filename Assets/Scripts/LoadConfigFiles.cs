@@ -15,7 +15,7 @@ public class LoadConfigFiles : MonoBehaviour
 
     private void Start()
     {
-        SettingsManager.Instance.CheckForConfigFiles();
+        SettingsManager.Instance.CheckForExistingConfigFiles();
         CreateConfigButtons();
     }
 

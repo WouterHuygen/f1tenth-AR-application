@@ -18,6 +18,8 @@ public class NetMqVehicleController : MonoBehaviour
 
     // // These variables are for setting the NetMQ settings manually through the unity editor. 
     // // VSMS server address: tcp://143.129.39.59:5555
+    // // The device will need to be connected through a VPN to acces the VSMS
+
     //[Header("NetMQ configuration")]
     //[Tooltip("ZeroMQ adress where the client should connect to")]
     //public string address;

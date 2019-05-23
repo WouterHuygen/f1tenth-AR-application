@@ -69,7 +69,7 @@ public class AddNewSettings : MonoBehaviour
             SetOriginOffsetSettings();
             SetOcclusionSettings();
 
-            SettingsManager.Instance.CreateBasicXmlFile(SettingsManager.Instance.ConfigFilePath);
+            SettingsManager.Instance.InitNewXmlFile(SettingsManager.Instance.ConfigFilePath);
             SettingsManager.Instance.WriteToXml(SettingsManager.Instance.ConfigFilePath);
 
             Debug.Log("New config file created at " + SettingsManager.Instance.ConfigFilePath);
