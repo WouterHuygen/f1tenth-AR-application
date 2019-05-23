@@ -2300,7 +2300,7 @@ MonoBehaviour:
   occlusionMask: {fileID: 8191315383276733937, guid: 0e7d57beaf76aee4c8c430a016890072,
     type: 3}
   normalizeVectorFromServer: 1
-  nullPointOffset: {x: 2.815, y: 0, z: -0.22}
+  nullPointOffset: {x: 0, y: 0, z: 0}
   poseText: {fileID: 1521746540}
   targetOne: {fileID: 88799958}
   targetTwo: {fileID: 1924421640}

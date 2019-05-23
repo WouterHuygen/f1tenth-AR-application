@@ -29,7 +29,7 @@ public class NetMqVehicleController : MonoBehaviour
     [Tooltip("The value the received coördinates are normalized with")]
     public float normalizeVectorFromServer = 1F;
     [Tooltip("The offset for the 0 coordinate")]
-    public UnityEngine.Vector3 nullPointOffset = new UnityEngine.Vector3(2.815F, 0F, -0.22F);
+    public UnityEngine.Vector3 nullPointOffset = new UnityEngine.Vector3(0F, 0F, 0F);
     [Tooltip("Text Object to display")]
     public Text poseText;
 
