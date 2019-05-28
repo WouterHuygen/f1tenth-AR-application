@@ -13,10 +13,10 @@ public class ChangeSceneOnClick : MonoBehaviour
     void Start()
     {
         //Calls the TaskOnClick method when you click the Button
-        buttonToClick.onClick.AddListener(TaskOnClick);
+        buttonToClick.onClick.AddListener(LoadScene);
     }
 
-    void TaskOnClick()
+    void LoadScene()
     {
         SceneManager.LoadScene(sceneToLoad, LoadSceneMode.Single);
     }

@@ -5,7 +5,9 @@ using ZeroMQ;
 using F1Tenth;
 using System.Threading;
 using UnityEngine.UI;
-
+/// <summary>
+/// Deprecated and not used!!!
+/// </summary>
 public class ZeroMQVehicleController : MonoBehaviour
 {
     [Header("ZeroMQ configuration")]

@@ -4,6 +4,10 @@ using System.IO;
 using System.Xml;
 using UnityEngine;
 
+/// <summary>
+/// Not used in application!!!
+/// </summary>
+
 public class XmlConfigFile : MonoBehaviour
 {
 

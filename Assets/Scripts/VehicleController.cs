@@ -13,13 +13,15 @@ using UnityEngine.UI;
 using Vuforia;
 using Assets.Scripts;
 
-public class NetMqVehicleController : MonoBehaviour
+/// <summary>
+/// VSMS server address: tcp://143.129.39.59:5555
+/// NetMQ topic: pose
+/// The device running the app or it's acces point will need to be connected through the UA VPN to acces the VSMS
+/// </summary>
+
+public class VehicleController : MonoBehaviour
 {
-
-    // // These variables are for setting the NetMQ settings manually through the unity editor. 
-    // // VSMS server address: tcp://143.129.39.59:5555
-    // // The device will need to be connected through a VPN to acces the VSMS
-
+    // These variables are for setting the NetMQ settings manually through the unity editor. 
     //[Header("NetMQ configuration")]
     //[Tooltip("ZeroMQ adress where the client should connect to")]
     //public string address;

@@ -6473,6 +6473,8 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Origin Rotation Offset
 
+    (currently not implemented)
+
     W X Y Z'
 --- !u!222 &2026825151
 CanvasRenderer:
