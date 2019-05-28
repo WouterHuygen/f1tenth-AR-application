@@ -56,8 +56,9 @@ public class SettingsManager : Singleton<SettingsManager>
 
     private void SetupSettingsManager()
     {
-        CheckForExistingConfigFiles();
         InitDefaultXmlFile();
+        CheckForExistingConfigFiles();
+        
     }
 
     private void InitDefaultXmlFile()

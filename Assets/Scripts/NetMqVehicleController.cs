@@ -42,6 +42,9 @@ public class NetMqVehicleController : MonoBehaviour
     [Tooltip("Fourth image target to be tracked")]
     public ImageTargetBehaviour targetFour;
 
+    [Tooltip("Debug Text")]
+    public Text debugText;
+
     // NetMQ listener
     private NetMqListener _netMqListener;
     // Proto Object
@@ -90,7 +93,7 @@ public class NetMqVehicleController : MonoBehaviour
             RotateObjectTo(vehicleArray[(int)pose.Id], (Converter.ToUnityQuaternion(pose.Rotation)) * originOffsetRotation);
         }
     }
-
+    
     private void OnDestroy()
     {
         _netMqListener.Stop();
@@ -110,6 +113,7 @@ public class NetMqVehicleController : MonoBehaviour
         {
             pose = F1Tenth.Pose.Parser.ParseFrom(message);
             Debug.Log(pose);
+            //debugText.text = pose.Id.ToString();
             if (!vehicleIds.Contains((int)pose.Id))
             {
                 vehicleIds.Add((int)pose.Id);
@@ -132,7 +136,7 @@ public class NetMqVehicleController : MonoBehaviour
                         CreateNewVirtualVehicle((int)pose.Id);
                     }
                 }
-                else if (SettingsManager.Instance.IsOccluded == true && pose.IsPhysical == false)
+                else if (SettingsManager.Instance.IsOccluded == false && pose.IsPhysical == false)
                 {
                     CreateNewVirtualVehicle((int)pose.Id);
                 }
