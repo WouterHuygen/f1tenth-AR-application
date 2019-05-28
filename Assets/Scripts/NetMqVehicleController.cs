@@ -58,6 +58,9 @@ public class NetMqVehicleController : MonoBehaviour
 
     public List<int> vehicleIds { get; private set; }
 
+    Dictionary<long, GameObject> vehicleDictionary =
+           new Dictionary<long, GameObject>();
+
     private GameObject[] vehicleArray = new GameObject[0];
     private int newVehicleArrayLength = 0;
 
@@ -75,7 +78,8 @@ public class NetMqVehicleController : MonoBehaviour
 
         _netMqListener = new NetMqListener(HandleNetMqMessage, serverAddress, serverTopic);
         _netMqListener.Start();
-        vehicleIds = new List<int>();
+
+        //vehicleIds = new List<int>();
     }
 
     private void Update()
@@ -88,9 +92,14 @@ public class NetMqVehicleController : MonoBehaviour
         }
         else if (IsSetup == true)
         {
-            MoveObjectTo(vehicleArray[(int)pose.Id], (Converter.ToUnityVector3(pose.Position)) + originOffsetPosition);
+            //MoveObjectTo(vehicleArray[(long)pose.Id], (PoseConverter.ToUnityVector3(pose.Position)) + originOffsetPosition);
 
-            RotateObjectTo(vehicleArray[(int)pose.Id], (Converter.ToUnityQuaternion(pose.Rotation)) * originOffsetRotation);
+            //RotateObjectTo(vehicleArray[(long)pose.Id], (PoseConverter.ToUnityQuaternion(pose.Rotation)) * originOffsetRotation);
+
+            MoveObjectTo(vehicleDictionary[(long)pose.Id], (PoseConverter.ToUnityVector3(pose.Position)) + originOffsetPosition);
+
+            // Rotation offset not yet working because making a quaternion offset is not tangible
+            RotateObjectTo(vehicleDictionary[(long)pose.Id], (PoseConverter.ToUnityQuaternion(pose.Rotation)) ); // * originOffsetRotation
         }
     }
     
@@ -112,65 +121,90 @@ public class NetMqVehicleController : MonoBehaviour
         else if (text != serverTopic)
         {
             pose = F1Tenth.Pose.Parser.ParseFrom(message);
+
             Debug.Log(pose);
-            //debugText.text = pose.Id.ToString();
-            if (!vehicleIds.Contains((int)pose.Id))
+
+            if (!vehicleDictionary.ContainsKey((long)pose.Id))
             {
-                vehicleIds.Add((int)pose.Id);
-
-                foreach (int id in vehicleIds)
-                {
-                    newVehicleArrayLength = Math.Max(newVehicleArrayLength, id);
-                }
-
-                Array.Resize(ref vehicleArray, newVehicleArrayLength + 1);
-
+                // Check if occlusion is ON
                 if (SettingsManager.Instance.IsOccluded == true)
                 {
+                    // Check if the vehicle is a physical f1tenth
                     if (pose.IsPhysical == true)
                     {
-                        CreateNewPhysicalVehicleMask((int)pose.Id);
+                        CreateNewPhysicalVehicleMask((long)pose.Id);
                     }
                     else if (pose.IsPhysical == false)
                     {
-                        CreateNewVirtualVehicle((int)pose.Id);
+                        CreateNewVirtualVehicle((long)pose.Id);
                     }
                 }
                 else if (SettingsManager.Instance.IsOccluded == false && pose.IsPhysical == false)
                 {
-                    CreateNewVirtualVehicle((int)pose.Id);
+                    CreateNewVirtualVehicle((long)pose.Id);
                 }
-                
-
             }
+
+
+
+            //if (!vehicleIds.Contains((int)pose.Id))
+            //{
+            //    vehicleIds.Add((int)pose.Id);
+
+            //    foreach (int id in vehicleIds)
+            //    {
+            //        newVehicleArrayLength = Math.Max(newVehicleArrayLength, id);
+            //    }
+
+            //    Array.Resize(ref vehicleArray, newVehicleArrayLength + 1);
+
+            //    if (SettingsManager.Instance.IsOccluded == true)
+            //    {
+            //        if (pose.IsPhysical == true)
+            //        {
+            //            CreateNewPhysicalVehicleMask((int)pose.Id);
+            //        }
+            //        else if (pose.IsPhysical == false)
+            //        {
+            //            CreateNewVirtualVehicle((int)pose.Id);
+            //        }
+            //    }
+            //    else if (SettingsManager.Instance.IsOccluded == false && pose.IsPhysical == false)
+            //    {
+            //        CreateNewVirtualVehicle((int)pose.Id);
+            //    }
+            //}
 
         }
 
     }
 
-    private void MoveObjectTo(GameObject obj, UnityEngine.Vector3 newPosition)
+    private void MoveObjectTo(GameObject objectToMove, UnityEngine.Vector3 newPosition)
     {
         UnityEngine.Vector3 nVector = newPosition;
-        obj.transform.position = nVector;
+        objectToMove.transform.position = nVector;
     }
 
-    private void RotateObjectTo(GameObject obj, UnityEngine.Quaternion newRotation)
+    // Rotation should happen with EulerAngles instead of Quaternions
+    private void RotateObjectTo(GameObject objectToRotate, UnityEngine.Quaternion newRotation)
     {
         UnityEngine.Quaternion _newRotation = newRotation;
-        obj.transform.localRotation = _newRotation;
+        objectToRotate.transform.localRotation = _newRotation;
     }
 
-    private void CreateNewVirtualVehicle(int Id)
+    private void CreateNewVirtualVehicle(long Id)
     {
         GameObject _vehicle = (GameObject)Instantiate(vehicle);
-        vehicleArray[Id] = _vehicle;
+        vehicleDictionary.Add(Id, _vehicle);
+        //vehicleArray[Id] = _vehicle;
 
     }
 
-    private void CreateNewPhysicalVehicleMask(int Id)
+    private void CreateNewPhysicalVehicleMask(long Id)
     {
         GameObject _mask = (GameObject)Instantiate(occlusionMask);
-        vehicleArray[Id] = _mask;
+        vehicleDictionary.Add(Id, _mask);
+        //vehicleArray[Id] = _mask;
     }
 
     private void GetNetMqSettings()

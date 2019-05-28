@@ -6,32 +6,35 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
-    public static class Converter
+    public static class PoseConverter
     {
-        // !!!Waardes zijn aangepast om coördinaten stelsels te laten matchen!!!
+        // Waardes zijn aangepast om coördinaten stelsel van VSMS te matchen met het coördinaten stelsel van Unity!!!
         public static UnityEngine.Vector3 ToUnityVector3(F1Tenth.Vector3 vector3)
         {
-            UnityEngine.Vector3 _vector3 = new UnityEngine.Vector3();
+            UnityEngine.Vector3 _vector3 = new UnityEngine.Vector3
+            {
+                x = -vector3.Y,
+                y = vector3.Z,
+                z = vector3.X
+            };
 
-            _vector3.x = -vector3.Y;
-            _vector3.y = vector3.Z;
-            _vector3.z = vector3.X;
-            
             return _vector3;
         }
 
         public static UnityEngine.Quaternion ToUnityQuaternion(F1Tenth.Quaternion quaternion)
         {
-            UnityEngine.Quaternion _quaternion = new UnityEngine.Quaternion();
-            _quaternion.w = quaternion.W;
-            _quaternion.x = quaternion.Y;
-            _quaternion.y = -quaternion.Z;
-            _quaternion.z = quaternion.X;
+            UnityEngine.Quaternion _quaternion = new UnityEngine.Quaternion
+            {
+                w = quaternion.W,
+                x = quaternion.Y,
+                y = quaternion.Z,
+                z = quaternion.X
+            };
             return _quaternion;
         }
 
 
-
+        // Deprecated and is not used anymore
         public static UnityEngine.Vector3 StringToVector3(string stringVector)
         {
             string sVector = stringVector;
