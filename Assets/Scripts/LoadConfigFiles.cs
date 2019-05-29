@@ -37,7 +37,7 @@ public class LoadConfigFiles : MonoBehaviour
 
     private void SwitchConfig(string configPath)
     {
-        SettingsManager.Instance.LoadXmlFile(configPath);
+        SettingsManager.Instance.LoadXmlFileToSettingsManager(configPath);
         Debug.Log(configPath + " loaded.");
         // Set the scene back to the settings selector scene
         SceneManager.LoadScene(sceneToLoadAfterConfigSwitch, LoadSceneMode.Single);

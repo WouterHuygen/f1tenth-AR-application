@@ -14,7 +14,7 @@ using Vuforia;
 using Assets.Scripts;
 
 /// <summary>
-/// VSMS server address: tcp://143.129.39.59:5555
+/// VSMS server socket: tcp://143.129.39.59:5555
 /// NetMQ topic: pose
 /// The device running the app or it's acces point will need to be connected through the UA VPN to acces the VSMS
 /// </summary>
@@ -53,7 +53,7 @@ public class VehicleController : MonoBehaviour
     private F1Tenth.Pose pose;
 
     // NetMQ config variables
-    private string serverAddress;
+    private string serverSocket;
     private string serverIp;
     private string serverPort;
     private string serverTopic;
@@ -63,8 +63,8 @@ public class VehicleController : MonoBehaviour
     Dictionary<long, GameObject> vehicleDictionary =
            new Dictionary<long, GameObject>();
 
-    private GameObject[] vehicleArray = new GameObject[0];
-    private int newVehicleArrayLength = 0;
+    //private GameObject[] vehicleArray = new GameObject[0];
+    //private int newVehicleArrayLength = 0;
 
     // Origin Offset to set the starting point for the cars
     private UnityEngine.Vector3 originOffsetPosition;
@@ -78,7 +78,7 @@ public class VehicleController : MonoBehaviour
         GetNetMqSettings();
         SetupOriginOffset();
 
-        _netMqListener = new NetMqListener(HandleNetMqMessage, serverAddress, serverTopic);
+        _netMqListener = new NetMqListener(HandleNetMqMessage, serverSocket, serverTopic);
         _netMqListener.Start();
 
         //vehicleIds = new List<int>();
@@ -114,13 +114,10 @@ public class VehicleController : MonoBehaviour
     // This method gets called everytime there is a new message from the NetMQ listener
     private void HandleNetMqMessage(byte[] message)
     {
-        var text = SendReceiveConstants.DefaultEncoding.GetString(message);
+        var serverMessage = SendReceiveConstants.DefaultEncoding.GetString(message);
 
-        if (text == serverTopic)
-        {
-            Debug.Log(text);
-        }
-        else if (text != serverTopic)
+        // Every 2 messages the message is the server topic
+        if (serverMessage != serverTopic)
         {
             pose = F1Tenth.Pose.Parser.ParseFrom(message);
 
@@ -214,7 +211,7 @@ public class VehicleController : MonoBehaviour
         serverIp = SettingsManager.Instance.ServerIp;
         serverPort = SettingsManager.Instance.ServerPort;
         serverTopic = SettingsManager.Instance.ServerTopic;
-        serverAddress = "tcp://" + serverIp + ":" + serverPort;
+        serverSocket = "tcp://" + serverIp + ":" + serverPort;
     }
 
     private void SetupOriginOffset()

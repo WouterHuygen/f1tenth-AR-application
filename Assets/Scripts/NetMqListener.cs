@@ -1,4 +1,4 @@
-﻿/// NetMQ Listener class based on a ZeroMQ example class from the following github repo:
+﻿/// NetMQ Listener class based on a NetMQ example listener class from the following github repo:
 /// https://github.com/valkjsaaa/Unity-ZeroMQ-Example
 
 using NetMQ;
@@ -14,16 +14,14 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    /// <summary>
-    /// NetMQ Listener Class
-    /// </summary>
+    // NetMQ Listener Class
     public class NetMqListener
     {
         private readonly Thread _listenerWorker;
 
         private bool _listenerCancelled;
 
-        private string _address;
+        private string _socket;
 
         private string _topic;
 
@@ -39,8 +37,9 @@ namespace Assets.Scripts
             using (var subSocket = new SubscriberSocket())
             {
                 subSocket.Options.ReceiveHighWatermark = 1000;
-                subSocket.Connect(_address);
+                subSocket.Connect(_socket);
                 subSocket.Subscribe(_topic);
+                Debug.Log("Connected to: " + _socket + " on topic: " + _topic);
                 var msg = new Msg();
                 msg.InitEmpty();
                 var timeout = new TimeSpan(0, 0, 0, 1);
@@ -70,11 +69,11 @@ namespace Assets.Scripts
             }
         }
 
-        public NetMqListener(MessageDelegate messageDelegate, string address, string topic)
+        public NetMqListener(MessageDelegate messageDelegate, string socket, string topic)
         {
             _messageDelegate = messageDelegate;
             _listenerWorker = new Thread(ListenerWork);
-            _address = address;
+            _socket = socket;
             _topic = topic;
         }
 

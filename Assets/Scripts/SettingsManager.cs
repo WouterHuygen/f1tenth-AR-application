@@ -93,7 +93,7 @@ public class SettingsManager : Singleton<SettingsManager>
         // Else load the excisting file
         else
         {
-            LoadXmlFile(ConfigFilePath);
+            LoadXmlFileToSettingsManager(ConfigFilePath);
             Debug.Log("XML settings loaded from " + ConfigFilePath);
         }
     }
@@ -123,8 +123,9 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    public void LoadXmlFile(string filePath)
+    public void LoadXmlFileToSettingsManager(string filePath)
     {
+        ConfigFilePath = filePath;
         ConfigFileName = LoadConfigFileNameFromXml(filePath);
         LoadZeroMqConfigFromXml(filePath);
         LoadOriginOffsetConfigFromXml(filePath);
