@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class EditCurrentSettings : MonoBehaviour
+public class EditCurrentConfig : MonoBehaviour
 {
     [Header("Config Name Text Field")]
     public Text configNameText;
@@ -70,6 +70,7 @@ public class EditCurrentSettings : MonoBehaviour
         //}
         else
         {
+
             SetZeroMqSettings();
             SetOriginOffsetSettings();
             SetOcclusionSettings();

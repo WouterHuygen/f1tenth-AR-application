@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class AddNewSettings : MonoBehaviour
+public class AddNewConfig : MonoBehaviour
 {
     [Header("Config Name Inputfield")]
     public InputField configNameInputField;
